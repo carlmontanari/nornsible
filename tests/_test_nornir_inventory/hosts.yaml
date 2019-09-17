@@ -1,0 +1,15 @@
+---
+sea-eos-1:
+  hostname: 1.2.3.4
+  groups:
+    - sea
+    - eos
+
+sea-nxos-1:
+  hostname: 4.3.2.1
+  groups:
+    - sea
+    - nxos
+
+localhost:
+  hostname: 127.0.0.1

@@ -1,0 +1,12 @@
+tox>=3.14.0
+black>=19.3b0
+pytest>=5.0.1
+pytest-cov>=2.7.1
+pylama>=7.6.6
+pycodestyle>=2.5.0
+pydocstyle>=4.0.1
+pylint>=2.3.1
+darglint>=0.6.1
+pdoc3>=0.6.2
+nornir>=2.2.0
+-r requirements.txt

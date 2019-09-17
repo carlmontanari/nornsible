@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.6.3" />
+<title>nornsible.nornsible API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>nornsible.nornsible</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">import argparse
+import logging
+import sys
+import threading
+
+from colorama import Fore, Style, init
+from nornir.core.task import Result
+
+
+session_log = logging.getLogger(__name__)
+
+init(autoreset=True, strip=False)
+LOCK = threading.Lock()
+
+
+def parse_cli_args(args: list) -&gt; dict:
+    &#34;&#34;&#34;
+    Parse CLI provided arguments; ignore unrecognized.
+
+    Arguments:
+        args: List of CLI provided arguments
+
+    Returns:
+        cli_args: Processed CLI arguments
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    parser = argparse.ArgumentParser(description=&#34;Nornir Script Wrapper&#34;)
+    parser.add_argument(
+        &#34;-w&#34;,
+        &#34;--workers&#34;,
+        help=&#34;number of workers to set for global configuration&#34;,
+        type=int,
+        default=0,
+    )
+    parser.add_argument(
+        &#34;-l&#34;,
+        &#34;--limit&#34;,
+        help=&#34;limit to host or comma separated list of hosts&#34;,
+        type=str.lower,
+        default=&#34;&#34;,
+    )
+    parser.add_argument(
+        &#34;-g&#34;,
+        &#34;--groups&#34;,
+        help=&#34;limit to group or comma separated list of groups&#34;,
+        type=str.lower,
+        default=&#34;&#34;,
+    )
+    parser.add_argument(
+        &#34;-t&#34;, &#34;--tags&#34;, help=&#34;names of tasks to explicitly run&#34;, type=str.lower, default=&#34;&#34;
+    )
+    parser.add_argument(&#34;-s&#34;, &#34;--skip&#34;, help=&#34;names of tasks to skip&#34;, type=str.lower, default=&#34;&#34;)
+    args, _ = parser.parse_known_args(args)
+    cli_args = {}
+    cli_args[&#34;workers&#34;] = args.workers if args.workers else False
+    cli_args[&#34;limit&#34;] = set(args.limit.split(&#34;,&#34;)) if args.limit else False
+    cli_args[&#34;groups&#34;] = set(args.groups.split(&#34;,&#34;)) if args.groups else False
+    cli_args[&#34;run_tags&#34;] = set(args.tags.split(&#34;,&#34;)) if args.tags else []
+    cli_args[&#34;skip_tags&#34;] = set(args.skip.split(&#34;,&#34;)) if args.skip else []
+    return cli_args
+
+
+def patch_inventory(cli_args: dict, inv):
+    &#34;&#34;&#34;
+    Patch nornir inventory configurations per cli arguments.
+
+    Arguments:
+        cli_args: Updates from CLI to update in Nornir objects
+        inv: nornir.core.inventory.Inventory object; Initialized Nornir Inventory object
+
+    Returns:
+        inv: nornir.core.inventory.Inventory object; Updated Nornir Inventory object
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    if cli_args[&#34;limit&#34;]:
+        valid_hosts = []
+        invalid_hosts = []
+        for host in cli_args[&#34;limit&#34;]:
+            if host in inv.hosts.keys():
+                valid_hosts.append(host)
+            else:
+                invalid_hosts.append(host)
+        if invalid_hosts:
+            print(
+                &#34;Host limit contained invalid host(s), ignoring: &#34;
+                f&#34;{[host for host in invalid_hosts]}&#34;
+            )
+        inv = inv.filter(filter_func=lambda h: h.name in valid_hosts)
+
+    elif cli_args[&#34;groups&#34;]:
+        valid_groups = [g for g in cli_args[&#34;groups&#34;] if g in inv.groups.keys()]
+        invalid_groups = [g for g in cli_args[&#34;groups&#34;] if g not in inv.groups.keys()]
+        if invalid_groups:
+            print(
+                &#34;Group limit contained invalid group(s), ignoring: &#34;
+                f&#34;{[host for host in invalid_groups]}&#34;
+            )
+        inv = inv.filter(filter_func=lambda h: any(True for g in valid_groups if g in h.groups))
+    return inv
+
+
+def patch_config(cli_args: dict, conf):
+    &#34;&#34;&#34;
+    Patch nornir core configurations per cli arguments.
+
+    Arguments:
+        cli_args: Updates from CLI to update in Nornir objects
+        conf: nornir.core.configuration.Config object; Initialized Nornir Config object
+
+    Returns:
+        conf: nornir.core.configuration.Config object; Updated Nornir Config object
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    if cli_args[&#34;workers&#34;]:
+        conf.core.num_workers = cli_args[&#34;workers&#34;]
+
+    return conf
+
+
+def process_tags_messages(msg):
+    &#34;&#34;&#34;
+    Handle printing pretty messages for process_tags decorator
+
+    Args:
+        msg: message to beautifully print to stdout
+
+    Returns:
+         N/A
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    LOCK.acquire()
+    try:
+        print(&#34;{}{}{}{}&#34;.format(Style.BRIGHT, Fore.CYAN, msg, &#34;-&#34; * (80 - len(msg))))
+    finally:
+        LOCK.release()
+
+
+def process_tags(wrapped_func):
+    &#34;&#34;&#34;
+    Decorate an &#34;operation&#34; -- execute or skip the operation based on tags
+
+    Args:
+        wrapped_func: function to wrap in tag processor
+
+    Returns:
+        tag_wrapper: wrapped function
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+
+    def tag_wrapper(task, *args, **kwargs):
+        if set([wrapped_func.__name__]).intersection(task.nornir.skip_tags):
+            msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
+            process_tags_messages(msg)
+            return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
+        if not task.nornir.run_tags:
+            return wrapped_func(task, *args, **kwargs)
+        if set([wrapped_func.__name__]).intersection(task.nornir.run_tags):
+            return wrapped_func(task, *args, **kwargs)
+        msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
+        process_tags_messages(msg)
+        return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
+
+    tag_wrapper.__name__ = wrapped_func.__name__
+    return tag_wrapper
+
+
+def Init_Nornsible(nr):
+    &#34;&#34;&#34;
+    Patch nornir object based on cli arguments
+
+    Arguments:
+        nr: Nornir object
+
+    Returns:
+        nr: Nornir object; modified if cli args dictate the need to do so; otherwise passed as is
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    cli_args = parse_cli_args(sys.argv[1:])
+
+    nr.run_tags = cli_args.pop(&#34;run_tags&#34;)
+    nr.skip_tags = cli_args.pop(&#34;skip_tags&#34;)
+
+    if any(a for a in cli_args.values()):
+        nr.config = patch_config(cli_args, nr.config)
+        nr.inventory = patch_inventory(cli_args, nr.inventory)
+        return nr
+
+    return nr</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="nornsible.nornsible.Init_Nornsible"><code class="name flex">
+<span>def <span class="ident">Init_Nornsible</span></span>(<span>nr)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Patch nornir object based on cli arguments</p>
+<h2 id="arguments">Arguments</h2>
+<dl>
+<dt><strong><code>nr</code></strong></dt>
+<dd>Nornir object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>nr</code></strong></dt>
+<dd>Nornir object; modified if cli args dictate the need to do so; otherwise passed as is</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>N</code>/<code>A</code>
+# <code>noqa</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def Init_Nornsible(nr):
+    &#34;&#34;&#34;
+    Patch nornir object based on cli arguments
+
+    Arguments:
+        nr: Nornir object
+
+    Returns:
+        nr: Nornir object; modified if cli args dictate the need to do so; otherwise passed as is
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    cli_args = parse_cli_args(sys.argv[1:])
+
+    nr.run_tags = cli_args.pop(&#34;run_tags&#34;)
+    nr.skip_tags = cli_args.pop(&#34;skip_tags&#34;)
+
+    if any(a for a in cli_args.values()):
+        nr.config = patch_config(cli_args, nr.config)
+        nr.inventory = patch_inventory(cli_args, nr.inventory)
+        return nr
+
+    return nr</code></pre>
+</details>
+</dd>
+<dt id="nornsible.nornsible.parse_cli_args"><code class="name flex">
+<span>def <span class="ident">parse_cli_args</span></span>(<span>args)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Parse CLI provided arguments; ignore unrecognized.</p>
+<h2 id="arguments">Arguments</h2>
+<dl>
+<dt><strong><code>args</code></strong></dt>
+<dd>List of CLI provided arguments</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>cli_args</code></strong></dt>
+<dd>Processed CLI arguments</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>N</code>/<code>A</code>
+# <code>noqa</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def parse_cli_args(args: list) -&gt; dict:
+    &#34;&#34;&#34;
+    Parse CLI provided arguments; ignore unrecognized.
+
+    Arguments:
+        args: List of CLI provided arguments
+
+    Returns:
+        cli_args: Processed CLI arguments
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    parser = argparse.ArgumentParser(description=&#34;Nornir Script Wrapper&#34;)
+    parser.add_argument(
+        &#34;-w&#34;,
+        &#34;--workers&#34;,
+        help=&#34;number of workers to set for global configuration&#34;,
+        type=int,
+        default=0,
+    )
+    parser.add_argument(
+        &#34;-l&#34;,
+        &#34;--limit&#34;,
+        help=&#34;limit to host or comma separated list of hosts&#34;,
+        type=str.lower,
+        default=&#34;&#34;,
+    )
+    parser.add_argument(
+        &#34;-g&#34;,
+        &#34;--groups&#34;,
+        help=&#34;limit to group or comma separated list of groups&#34;,
+        type=str.lower,
+        default=&#34;&#34;,
+    )
+    parser.add_argument(
+        &#34;-t&#34;, &#34;--tags&#34;, help=&#34;names of tasks to explicitly run&#34;, type=str.lower, default=&#34;&#34;
+    )
+    parser.add_argument(&#34;-s&#34;, &#34;--skip&#34;, help=&#34;names of tasks to skip&#34;, type=str.lower, default=&#34;&#34;)
+    args, _ = parser.parse_known_args(args)
+    cli_args = {}
+    cli_args[&#34;workers&#34;] = args.workers if args.workers else False
+    cli_args[&#34;limit&#34;] = set(args.limit.split(&#34;,&#34;)) if args.limit else False
+    cli_args[&#34;groups&#34;] = set(args.groups.split(&#34;,&#34;)) if args.groups else False
+    cli_args[&#34;run_tags&#34;] = set(args.tags.split(&#34;,&#34;)) if args.tags else []
+    cli_args[&#34;skip_tags&#34;] = set(args.skip.split(&#34;,&#34;)) if args.skip else []
+    return cli_args</code></pre>
+</details>
+</dd>
+<dt id="nornsible.nornsible.patch_config"><code class="name flex">
+<span>def <span class="ident">patch_config</span></span>(<span>cli_args, conf)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Patch nornir core configurations per cli arguments.</p>
+<h2 id="arguments">Arguments</h2>
+<dl>
+<dt><strong><code>cli_args</code></strong></dt>
+<dd>Updates from CLI to update in Nornir objects</dd>
+<dt><strong><code>conf</code></strong></dt>
+<dd>nornir.core.configuration.Config object; Initialized Nornir Config object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>conf</code></strong></dt>
+<dd>nornir.core.configuration.Config object; Updated Nornir Config object</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>N</code>/<code>A</code>
+# <code>noqa</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def patch_config(cli_args: dict, conf):
+    &#34;&#34;&#34;
+    Patch nornir core configurations per cli arguments.
+
+    Arguments:
+        cli_args: Updates from CLI to update in Nornir objects
+        conf: nornir.core.configuration.Config object; Initialized Nornir Config object
+
+    Returns:
+        conf: nornir.core.configuration.Config object; Updated Nornir Config object
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    if cli_args[&#34;workers&#34;]:
+        conf.core.num_workers = cli_args[&#34;workers&#34;]
+
+    return conf</code></pre>
+</details>
+</dd>
+<dt id="nornsible.nornsible.patch_inventory"><code class="name flex">
+<span>def <span class="ident">patch_inventory</span></span>(<span>cli_args, inv)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Patch nornir inventory configurations per cli arguments.</p>
+<h2 id="arguments">Arguments</h2>
+<dl>
+<dt><strong><code>cli_args</code></strong></dt>
+<dd>Updates from CLI to update in Nornir objects</dd>
+<dt><strong><code>inv</code></strong></dt>
+<dd>nornir.core.inventory.Inventory object; Initialized Nornir Inventory object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>inv</code></strong></dt>
+<dd>nornir.core.inventory.Inventory object; Updated Nornir Inventory object</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>N</code>/<code>A</code>
+# <code>noqa</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def patch_inventory(cli_args: dict, inv):
+    &#34;&#34;&#34;
+    Patch nornir inventory configurations per cli arguments.
+
+    Arguments:
+        cli_args: Updates from CLI to update in Nornir objects
+        inv: nornir.core.inventory.Inventory object; Initialized Nornir Inventory object
+
+    Returns:
+        inv: nornir.core.inventory.Inventory object; Updated Nornir Inventory object
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    if cli_args[&#34;limit&#34;]:
+        valid_hosts = []
+        invalid_hosts = []
+        for host in cli_args[&#34;limit&#34;]:
+            if host in inv.hosts.keys():
+                valid_hosts.append(host)
+            else:
+                invalid_hosts.append(host)
+        if invalid_hosts:
+            print(
+                &#34;Host limit contained invalid host(s), ignoring: &#34;
+                f&#34;{[host for host in invalid_hosts]}&#34;
+            )
+        inv = inv.filter(filter_func=lambda h: h.name in valid_hosts)
+
+    elif cli_args[&#34;groups&#34;]:
+        valid_groups = [g for g in cli_args[&#34;groups&#34;] if g in inv.groups.keys()]
+        invalid_groups = [g for g in cli_args[&#34;groups&#34;] if g not in inv.groups.keys()]
+        if invalid_groups:
+            print(
+                &#34;Group limit contained invalid group(s), ignoring: &#34;
+                f&#34;{[host for host in invalid_groups]}&#34;
+            )
+        inv = inv.filter(filter_func=lambda h: any(True for g in valid_groups if g in h.groups))
+    return inv</code></pre>
+</details>
+</dd>
+<dt id="nornsible.nornsible.process_tags"><code class="name flex">
+<span>def <span class="ident">process_tags</span></span>(<span>wrapped_func)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Decorate an "operation" &ndash; execute or skip the operation based on tags</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>wrapped_func</code></strong></dt>
+<dd>function to wrap in tag processor</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>tag_wrapper</code></strong></dt>
+<dd>wrapped function</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>N</code>/<code>A</code>
+# <code>noqa</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def process_tags(wrapped_func):
+    &#34;&#34;&#34;
+    Decorate an &#34;operation&#34; -- execute or skip the operation based on tags
+
+    Args:
+        wrapped_func: function to wrap in tag processor
+
+    Returns:
+        tag_wrapper: wrapped function
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+
+    def tag_wrapper(task, *args, **kwargs):
+        if set([wrapped_func.__name__]).intersection(task.nornir.skip_tags):
+            msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
+            process_tags_messages(msg)
+            return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
+        if not task.nornir.run_tags:
+            return wrapped_func(task, *args, **kwargs)
+        if set([wrapped_func.__name__]).intersection(task.nornir.run_tags):
+            return wrapped_func(task, *args, **kwargs)
+        msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
+        process_tags_messages(msg)
+        return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
+
+    tag_wrapper.__name__ = wrapped_func.__name__
+    return tag_wrapper</code></pre>
+</details>
+</dd>
+<dt id="nornsible.nornsible.process_tags_messages"><code class="name flex">
+<span>def <span class="ident">process_tags_messages</span></span>(<span>msg)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Handle printing pretty messages for process_tags decorator</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>msg</code></strong></dt>
+<dd>message to beautifully print to stdout</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>N</code>/<code>A</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>N</code>/<code>A</code>
+# <code>noqa</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def process_tags_messages(msg):
+    &#34;&#34;&#34;
+    Handle printing pretty messages for process_tags decorator
+
+    Args:
+        msg: message to beautifully print to stdout
+
+    Returns:
+         N/A
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    LOCK.acquire()
+    try:
+        print(&#34;{}{}{}{}&#34;.format(Style.BRIGHT, Fore.CYAN, msg, &#34;-&#34; * (80 - len(msg))))
+    finally:
+        LOCK.release()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="nornsible" href="index.html">nornsible</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="nornsible.nornsible.Init_Nornsible" href="#nornsible.nornsible.Init_Nornsible">Init_Nornsible</a></code></li>
+<li><code><a title="nornsible.nornsible.parse_cli_args" href="#nornsible.nornsible.parse_cli_args">parse_cli_args</a></code></li>
+<li><code><a title="nornsible.nornsible.patch_config" href="#nornsible.nornsible.patch_config">patch_config</a></code></li>
+<li><code><a title="nornsible.nornsible.patch_inventory" href="#nornsible.nornsible.patch_inventory">patch_inventory</a></code></li>
+<li><code><a title="nornsible.nornsible.process_tags" href="#nornsible.nornsible.process_tags">process_tags</a></code></li>
+<li><code><a title="nornsible.nornsible.process_tags_messages" href="#nornsible.nornsible.process_tags_messages">process_tags_messages</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.3</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
