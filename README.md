@@ -11,16 +11,16 @@ Wrap Nornir with Ansible-like host/group limits and tagging!
 
 The idea behind nornsible is to allow for Nornir scripts to be written to operate on an entire environment, and then limited to a subset of host(s) based on simple command line arguments. Of course you can simply do this yourself, but why not let nornsible handle it for you!
 
-Nornsible provides the ability to -- via command line arguments -- filter Nornir inventories by hostname or group name, or both. There is also a handy flag to set the number of workers; quite useful for setting workers to 1 for troubleshooting purposes.
+Nornsible provides the ability to -- via command line arguments -- filter Nornir inventories by hostname or group name, or both. There is also a handy flag to set the number of workers; quite useful for setting workers equal to 1 for troubleshooting purposes.
 
-Lastly nornsible supports the concept of tags. Tags correspond to the name of *custom* tasks and operate very much like tags in Ansible. Provide a list of tags to execute, and Nornsible will ensure that Nornir only runs those tasks. Provide a list of tags to skip, and Nornsible will ensure that Nornir only runs those not in that list. Easy peasy.
+Lastly, nornsible supports the concept of tags. Tags correspond to the name of *custom* tasks and operate very much like tags in Ansible. Provide a list of tags to execute, and Nornsible will ensure that Nornir only runs those tasks. Provide a list of tags to skip, and Nornsible will ensure that Nornir only runs those not in that list. Easy peasy.
 
 
 # How does nornsible work?
 
-Nornsible accepts an instantiated Nornir object as an argument and returns a slightly Nornir object. Nornsible sets the desired number of workers if applicable, and addts an attribute for "run_tags" and "skip_tags" based on your command line input.
+Nornsible accepts an instantiated Nornir object as an argument and returns a slightly modified Nornir object. Nornsible sets the desired number of workers if applicable, and adds an attribute for "run_tags" and "skip_tags" based on your command line input.
 
-To take advantage of the tags feautre Nornsible provides a decorator that you can use to decorate your custom tasks. This decorator inspects the task being ran and checks the task name against the lists of run and skip tags. If the task is allowed, Nornsible simply allows the task to run as per normal, if it is *not* allowed, Nornsible will print a pretty message and move on.
+To take advantage of the tags feature Nornsible provides a decorator that you can use to wrap your custom tasks. This decorator inspects the task being ran and checks the task name against the lists of run and skip tags. If the task is allowed, Nornsible simply allows the task to run as per normal, if it is *not* allowed, Nornsible will print a pretty message and move on.
 
 
 # Caveats
@@ -29,7 +29,7 @@ Nornsible breaks some things! Most notably it breaks "normal" Nornir filtering *
 
 If you want to do "normal" Nornir filtering -- do this *before* passing the nornir object to Nornsible.
 
-Nornsible, at the moment, can only wrap custom tasks. This can probably be imporved upon as well, but at the moment the decorator wrapping custom tasks solution seems to work pretty well.
+Nornsible, at the moment, can only wrap custom tasks. This can probably be improved upon as well, but at the moment the decorator wrapping custom tasks solution seems to work pretty well.
 
 
 # Installation
@@ -74,7 +74,7 @@ Create your Nornir object and then pass it through InitNornsible:
 
 ```
 nr = InitNornir(config_file="config.yaml")
-nr = Init_Nornsible(nr)
+nr = InitNornsible(nr)
 ```
 
 Run a custom task wrapped by `nornsible_task`:
@@ -126,7 +126,7 @@ TBA, probably things though!
 
 ## Linting
 
-This project uses [black](https://github.com/psf/black) for auto-formatting. In addition to black, tox will execute [pylama](https://github.com/klen/pylama), and [pydocstyle](https://github.com/PyCQA/pydocstyle) for linting purposes. I've also added docstring linting with [darglint](https://github.com/terrencepreilly/darglint) which has been quite handy!
+This project uses [black](https://github.com/psf/black) for auto-formatting. In addition to black, tox will execute [pylama](https://github.com/klen/pylama), and [pydocstyle](https://github.com/PyCQA/pydocstyle) for linting purposes. I've also added docstring linting with [darglint](https://github.com/terrencepreilly/darglint) which has been quite handy! Finally, I've been playing with type hints and have added mypy to the test/lint suite as well.
 
 ## Testing
 
