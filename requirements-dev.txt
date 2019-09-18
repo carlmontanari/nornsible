@@ -7,6 +7,7 @@ pycodestyle>=2.5.0
 pydocstyle>=4.0.1
 pylint>=2.3.1
 darglint>=0.6.1
+mypy>=0.720
+mypy-extensions>=0.4.1
 pdoc3>=0.6.2
-nornir>=2.2.0
 -r requirements.txt

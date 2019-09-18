@@ -1,25 +1,22 @@
 from pathlib import Path
 import sys
+import threading
 from unittest.mock import patch
 
 from nornir import InitNornir
 
 import nornsible
-from nornsible import Init_Nornsible, parse_cli_args, process_tags, patch_config, patch_inventory
+from nornsible import (
+    InitNornsible,
+    parse_cli_args,
+    patch_config,
+    patch_inventory,
+    nornsible_task_message,
+)
 
 
 NORNSIBLE_DIR = nornsible.__file__
 TEST_DIR = f"{Path(NORNSIBLE_DIR).parents[1]}/tests/"
-
-
-@process_tags
-def custom_task_example(task):
-    return "Hello, world!"
-
-
-@process_tags
-def custom_task_example_2(task):
-    return "Hello, world!"
 
 
 def test_parse_cli_args_basic_short():
@@ -166,7 +163,7 @@ def test_set_nornsible_limit_host():
                 },
             }
         )
-        nr = Init_Nornsible(nr)
+        nr = InitNornsible(nr)
         assert set(nr.inventory.hosts.keys()) == {"sea-eos-1"}
 
 
@@ -182,7 +179,7 @@ def test_set_nornsible_limit_group():
                 },
             }
         )
-        nr = Init_Nornsible(nr)
+        nr = InitNornsible(nr)
         assert set(nr.inventory.hosts.keys()) == {"sea-eos-1"}
 
 
@@ -198,7 +195,7 @@ def test_set_nornsible_workers():
                 },
             }
         )
-        nr = Init_Nornsible(nr)
+        nr = InitNornsible(nr)
         assert nr.config.core.num_workers == 10
 
 
@@ -214,7 +211,7 @@ def test_set_nornsible_limithost_invalid():
                 },
             }
         )
-        nr = Init_Nornsible(nr)
+        nr = InitNornsible(nr)
         assert set(nr.inventory.hosts.keys()) == set()
 
 
@@ -230,7 +227,7 @@ def test_set_nornsible_limit_group_invalid():
                 },
             }
         )
-        nr = Init_Nornsible(nr)
+        nr = InitNornsible(nr)
         assert set(nr.inventory.hosts.keys()) == set()
 
 
@@ -246,69 +243,11 @@ def test_set_nornsible_do_nothing():
                 },
             }
         )
-        nornsible_nr = Init_Nornsible(initial_nr)
+        nornsible_nr = InitNornsible(initial_nr)
         assert nornsible_nr == initial_nr
 
 
-def test_tags_wrapper_skip_task():
-    testargs = ["somescript", "-l", "localhost", "-s", "custom_task_example"]
-    with patch.object(sys, "argv", testargs):
-        nr = InitNornir(
-            inventory={
-                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
-                "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
-                },
-            }
-        )
-        nr = Init_Nornsible(nr)
-        task_result = nr.run(task=custom_task_example)
-        assert set(task_result.keys()) == {"localhost"}
-        assert task_result["localhost"].result == "Task skipped!"
-
-
-def test_tags_wrapper_explicit_task():
-    testargs = ["somescript", "-l", "localhost", "-t", "custom_task_example_2"]
-    with patch.object(sys, "argv", testargs):
-        nr = InitNornir(
-            inventory={
-                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
-                "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
-                },
-            }
-        )
-        nr = Init_Nornsible(nr)
-        print(nr.inventory.hosts)
-        tasks = [custom_task_example, custom_task_example_2]
-        task_results = []
-        for task in tasks:
-            task_results.append(nr.run(task=task))
-
-        assert task_results[0]["localhost"].result == "Task skipped!"
-        assert task_results[1]["localhost"].result == "Hello, world!"
-
-
-def test_tags_wrapper_no_tags():
-    testargs = ["somescript", "-l", "localhost"]
-    with patch.object(sys, "argv", testargs):
-        nr = InitNornir(
-            inventory={
-                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
-                "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
-                },
-            }
-        )
-        nr = Init_Nornsible(nr)
-        print(nr.inventory.hosts)
-        tasks = [custom_task_example, custom_task_example_2]
-        task_results = []
-        for task in tasks:
-            task_results.append(nr.run(task=task))
-
-        assert task_results[0]["localhost"].result == "Hello, world!"
-        assert task_results[1]["localhost"].result == "Hello, world!"
+def test_process_tags_messages(capfd):
+    nornsible_task_message("this is a test message")
+    std_out, std_err = capfd.readouterr()
+    assert "this is a test message" in std_out

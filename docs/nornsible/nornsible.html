@@ -23,15 +23,12 @@
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">import argparse
-import logging
 import sys
 import threading
 
-from colorama import Fore, Style, init
+from colorama import Back, Fore, init, Style
 from nornir.core.task import Result
 
-
-session_log = logging.getLogger(__name__)
 
 init(autoreset=True, strip=False)
 LOCK = threading.Lock()
@@ -150,9 +147,9 @@ def patch_config(cli_args: dict, conf):
     return conf
 
 
-def process_tags_messages(msg):
+def nornsible_task_message(msg):
     &#34;&#34;&#34;
-    Handle printing pretty messages for process_tags decorator
+    Handle printing pretty messages for nornsible_task decorator
 
     Args:
         msg: message to beautifully print to stdout
@@ -166,12 +163,12 @@ def process_tags_messages(msg):
     &#34;&#34;&#34;
     LOCK.acquire()
     try:
-        print(&#34;{}{}{}{}&#34;.format(Style.BRIGHT, Fore.CYAN, msg, &#34;-&#34; * (80 - len(msg))))
+        print(f&#34;{Style.BRIGHT}{Back.CYAN}{Fore.WHITE}{msg}{&#39;-&#39; * (80 - len(msg))}&#34;)
     finally:
         LOCK.release()
 
 
-def process_tags(wrapped_func):
+def nornsible_task(wrapped_func):
     &#34;&#34;&#34;
     Decorate an &#34;operation&#34; -- execute or skip the operation based on tags
 
@@ -187,23 +184,23 @@ def process_tags(wrapped_func):
     &#34;&#34;&#34;
 
     def tag_wrapper(task, *args, **kwargs):
-        if set([wrapped_func.__name__]).intersection(task.nornir.skip_tags):
+        if {wrapped_func.__name__}.intersection(task.nornir.skip_tags):
             msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
-            process_tags_messages(msg)
+            nornsible_task_message(msg)
             return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
         if not task.nornir.run_tags:
             return wrapped_func(task, *args, **kwargs)
-        if set([wrapped_func.__name__]).intersection(task.nornir.run_tags):
+        if {wrapped_func.__name__}.intersection(task.nornir.run_tags):
             return wrapped_func(task, *args, **kwargs)
         msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
-        process_tags_messages(msg)
+        nornsible_task_message(msg)
         return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
 
     tag_wrapper.__name__ = wrapped_func.__name__
     return tag_wrapper
 
 
-def Init_Nornsible(nr):
+def InitNornsible(nr):
     &#34;&#34;&#34;
     Patch nornir object based on cli arguments
 
@@ -237,8 +234,8 @@ def Init_Nornsible(nr):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="nornsible.nornsible.Init_Nornsible"><code class="name flex">
-<span>def <span class="ident">Init_Nornsible</span></span>(<span>nr)</span>
+<dt id="nornsible.nornsible.InitNornsible"><code class="name flex">
+<span>def <span class="ident">InitNornsible</span></span>(<span>nr)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Patch nornir object based on cli arguments</p>
@@ -260,7 +257,7 @@ def Init_Nornsible(nr):
 </dl></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def Init_Nornsible(nr):
+<pre><code class="python">def InitNornsible(nr):
     &#34;&#34;&#34;
     Patch nornir object based on cli arguments
 
@@ -285,6 +282,105 @@ def Init_Nornsible(nr):
         return nr
 
     return nr</code></pre>
+</details>
+</dd>
+<dt id="nornsible.nornsible.nornsible_task"><code class="name flex">
+<span>def <span class="ident">nornsible_task</span></span>(<span>wrapped_func)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Decorate an "operation" &ndash; execute or skip the operation based on tags</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>wrapped_func</code></strong></dt>
+<dd>function to wrap in tag processor</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>tag_wrapper</code></strong></dt>
+<dd>wrapped function</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>N</code>/<code>A</code>
+# <code>noqa</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def nornsible_task(wrapped_func):
+    &#34;&#34;&#34;
+    Decorate an &#34;operation&#34; -- execute or skip the operation based on tags
+
+    Args:
+        wrapped_func: function to wrap in tag processor
+
+    Returns:
+        tag_wrapper: wrapped function
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+
+    def tag_wrapper(task, *args, **kwargs):
+        if {wrapped_func.__name__}.intersection(task.nornir.skip_tags):
+            msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
+            nornsible_task_message(msg)
+            return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
+        if not task.nornir.run_tags:
+            return wrapped_func(task, *args, **kwargs)
+        if {wrapped_func.__name__}.intersection(task.nornir.run_tags):
+            return wrapped_func(task, *args, **kwargs)
+        msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
+        nornsible_task_message(msg)
+        return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
+
+    tag_wrapper.__name__ = wrapped_func.__name__
+    return tag_wrapper</code></pre>
+</details>
+</dd>
+<dt id="nornsible.nornsible.nornsible_task_message"><code class="name flex">
+<span>def <span class="ident">nornsible_task_message</span></span>(<span>msg)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Handle printing pretty messages for nornsible_task decorator</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>msg</code></strong></dt>
+<dd>message to beautifully print to stdout</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>N</code>/<code>A</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>N</code>/<code>A</code>
+# <code>noqa</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def nornsible_task_message(msg):
+    &#34;&#34;&#34;
+    Handle printing pretty messages for nornsible_task decorator
+
+    Args:
+        msg: message to beautifully print to stdout
+
+    Returns:
+         N/A
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+    LOCK.acquire()
+    try:
+        print(f&#34;{Style.BRIGHT}{Back.CYAN}{Fore.WHITE}{msg}{&#39;-&#39; * (80 - len(msg))}&#34;)
+    finally:
+        LOCK.release()</code></pre>
 </details>
 </dd>
 <dt id="nornsible.nornsible.parse_cli_args"><code class="name flex">
@@ -473,105 +569,6 @@ def Init_Nornsible(nr):
     return inv</code></pre>
 </details>
 </dd>
-<dt id="nornsible.nornsible.process_tags"><code class="name flex">
-<span>def <span class="ident">process_tags</span></span>(<span>wrapped_func)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Decorate an "operation" &ndash; execute or skip the operation based on tags</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>wrapped_func</code></strong></dt>
-<dd>function to wrap in tag processor</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>tag_wrapper</code></strong></dt>
-<dd>wrapped function</dd>
-</dl>
-<h2 id="raises">Raises</h2>
-<dl>
-<dt><code>N</code>/<code>A</code>
-# <code>noqa</code></dt>
-<dd>&nbsp;</dd>
-</dl></section>
-<details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def process_tags(wrapped_func):
-    &#34;&#34;&#34;
-    Decorate an &#34;operation&#34; -- execute or skip the operation based on tags
-
-    Args:
-        wrapped_func: function to wrap in tag processor
-
-    Returns:
-        tag_wrapper: wrapped function
-
-    Raises:
-        N/A  # noqa
-
-    &#34;&#34;&#34;
-
-    def tag_wrapper(task, *args, **kwargs):
-        if set([wrapped_func.__name__]).intersection(task.nornir.skip_tags):
-            msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
-            process_tags_messages(msg)
-            return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
-        if not task.nornir.run_tags:
-            return wrapped_func(task, *args, **kwargs)
-        if set([wrapped_func.__name__]).intersection(task.nornir.run_tags):
-            return wrapped_func(task, *args, **kwargs)
-        msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
-        process_tags_messages(msg)
-        return Result(host=task.host, result=&#34;Task skipped!&#34;, failed=False, changed=False)
-
-    tag_wrapper.__name__ = wrapped_func.__name__
-    return tag_wrapper</code></pre>
-</details>
-</dd>
-<dt id="nornsible.nornsible.process_tags_messages"><code class="name flex">
-<span>def <span class="ident">process_tags_messages</span></span>(<span>msg)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Handle printing pretty messages for process_tags decorator</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>msg</code></strong></dt>
-<dd>message to beautifully print to stdout</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>N</code>/<code>A</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="raises">Raises</h2>
-<dl>
-<dt><code>N</code>/<code>A</code>
-# <code>noqa</code></dt>
-<dd>&nbsp;</dd>
-</dl></section>
-<details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def process_tags_messages(msg):
-    &#34;&#34;&#34;
-    Handle printing pretty messages for process_tags decorator
-
-    Args:
-        msg: message to beautifully print to stdout
-
-    Returns:
-         N/A
-
-    Raises:
-        N/A  # noqa
-
-    &#34;&#34;&#34;
-    LOCK.acquire()
-    try:
-        print(&#34;{}{}{}{}&#34;.format(Style.BRIGHT, Fore.CYAN, msg, &#34;-&#34; * (80 - len(msg))))
-    finally:
-        LOCK.release()</code></pre>
-</details>
-</dd>
 </dl>
 </section>
 <section>
@@ -590,12 +587,12 @@ def Init_Nornsible(nr):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="nornsible.nornsible.Init_Nornsible" href="#nornsible.nornsible.Init_Nornsible">Init_Nornsible</a></code></li>
+<li><code><a title="nornsible.nornsible.InitNornsible" href="#nornsible.nornsible.InitNornsible">InitNornsible</a></code></li>
+<li><code><a title="nornsible.nornsible.nornsible_task" href="#nornsible.nornsible.nornsible_task">nornsible_task</a></code></li>
+<li><code><a title="nornsible.nornsible.nornsible_task_message" href="#nornsible.nornsible.nornsible_task_message">nornsible_task_message</a></code></li>
 <li><code><a title="nornsible.nornsible.parse_cli_args" href="#nornsible.nornsible.parse_cli_args">parse_cli_args</a></code></li>
 <li><code><a title="nornsible.nornsible.patch_config" href="#nornsible.nornsible.patch_config">patch_config</a></code></li>
 <li><code><a title="nornsible.nornsible.patch_inventory" href="#nornsible.nornsible.patch_inventory">patch_inventory</a></code></li>
-<li><code><a title="nornsible.nornsible.process_tags" href="#nornsible.nornsible.process_tags">process_tags</a></code></li>
-<li><code><a title="nornsible.nornsible.process_tags_messages" href="#nornsible.nornsible.process_tags_messages">process_tags_messages</a></code></li>
 </ul>
 </li>
 </ul>

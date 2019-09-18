@@ -1,1 +1,2 @@
 colorama>=0.3.9
+nornir>=2.2.0

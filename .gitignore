@@ -73,3 +73,7 @@ dmypy.json
 # macos stuff
 .DS_Store
 */.DS_Store
+
+# nornir (or any other) log files from testing
+.log
+*/.log

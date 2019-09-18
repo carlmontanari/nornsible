@@ -1,24 +1,23 @@
 import argparse
-import logging
 import sys
 import threading
+from typing import Dict, List, Any, Union, Callable
 
-from colorama import Fore, Style, init
+from colorama import Back, Fore, init, Style
+from nornir.core import Nornir, Config, Inventory
+from nornir.core.task import Task
 from nornir.core.task import Result
-
-
-session_log = logging.getLogger(__name__)
 
 init(autoreset=True, strip=False)
 LOCK = threading.Lock()
 
 
-def parse_cli_args(args: list) -> dict:
+def parse_cli_args(raw_args: List[str]) -> dict:
     """
     Parse CLI provided arguments; ignore unrecognized.
 
     Arguments:
-        args: List of CLI provided arguments
+        raw_args: List of CLI provided arguments
 
     Returns:
         cli_args: Processed CLI arguments
@@ -53,17 +52,18 @@ def parse_cli_args(args: list) -> dict:
         "-t", "--tags", help="names of tasks to explicitly run", type=str.lower, default=""
     )
     parser.add_argument("-s", "--skip", help="names of tasks to skip", type=str.lower, default="")
-    args, _ = parser.parse_known_args(args)
-    cli_args = {}
-    cli_args["workers"] = args.workers if args.workers else False
-    cli_args["limit"] = set(args.limit.split(",")) if args.limit else False
-    cli_args["groups"] = set(args.groups.split(",")) if args.groups else False
-    cli_args["run_tags"] = set(args.tags.split(",")) if args.tags else []
-    cli_args["skip_tags"] = set(args.skip.split(",")) if args.skip else []
+    args, _ = parser.parse_known_args(raw_args)
+    cli_args = {
+        "workers": args.workers if args.workers else False,
+        "limit": set(args.limit.split(",")) if args.limit else False,
+        "groups": set(args.groups.split(",")) if args.groups else False,
+        "run_tags": set(args.tags.split(",")) if args.tags else [],
+        "skip_tags": set(args.skip.split(",")) if args.skip else [],
+    }
     return cli_args
 
 
-def patch_inventory(cli_args: dict, inv):
+def patch_inventory(cli_args: dict, inv: Inventory) -> Inventory:
     """
     Patch nornir inventory configurations per cli arguments.
 
@@ -105,7 +105,7 @@ def patch_inventory(cli_args: dict, inv):
     return inv
 
 
-def patch_config(cli_args: dict, conf):
+def patch_config(cli_args: dict, conf: Config) -> Config:
     """
     Patch nornir core configurations per cli arguments.
 
@@ -126,9 +126,9 @@ def patch_config(cli_args: dict, conf):
     return conf
 
 
-def process_tags_messages(msg):
+def nornsible_task_message(msg: str) -> None:
     """
-    Handle printing pretty messages for process_tags decorator
+    Handle printing pretty messages for nornsible_task decorator
 
     Args:
         msg: message to beautifully print to stdout
@@ -142,12 +142,12 @@ def process_tags_messages(msg):
     """
     LOCK.acquire()
     try:
-        print("{}{}{}{}".format(Style.BRIGHT, Fore.CYAN, msg, "-" * (80 - len(msg))))
+        print(f"{Style.BRIGHT}{Back.CYAN}{Fore.WHITE}{msg}{'-' * (80 - len(msg))}")
     finally:
         LOCK.release()
 
 
-def process_tags(wrapped_func):
+def nornsible_task(wrapped_func: Callable) -> Callable:
     """
     Decorate an "operation" -- execute or skip the operation based on tags
 
@@ -162,24 +162,26 @@ def process_tags(wrapped_func):
 
     """
 
-    def tag_wrapper(task, *args, **kwargs):
-        if set([wrapped_func.__name__]).intersection(task.nornir.skip_tags):
+    def tag_wrapper(
+        task: Task, *args: List[Any], **kwargs: Dict[str, Any]
+    ) -> Union[Callable, Result]:
+        if {wrapped_func.__name__}.intersection(task.nornir.skip_tags):
             msg = f"---- {task.host} skipping task {wrapped_func.__name__} "
-            process_tags_messages(msg)
+            nornsible_task_message(msg)
             return Result(host=task.host, result="Task skipped!", failed=False, changed=False)
         if not task.nornir.run_tags:
             return wrapped_func(task, *args, **kwargs)
-        if set([wrapped_func.__name__]).intersection(task.nornir.run_tags):
+        if {wrapped_func.__name__}.intersection(task.nornir.run_tags):
             return wrapped_func(task, *args, **kwargs)
         msg = f"---- {task.host} skipping task {wrapped_func.__name__} "
-        process_tags_messages(msg)
+        nornsible_task_message(msg)
         return Result(host=task.host, result="Task skipped!", failed=False, changed=False)
 
     tag_wrapper.__name__ = wrapped_func.__name__
     return tag_wrapper
 
 
-def Init_Nornsible(nr):
+def InitNornsible(nr: Nornir) -> Nornir:
     """
     Patch nornir object based on cli arguments
 

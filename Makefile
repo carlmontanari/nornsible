@@ -1,4 +1,4 @@
-test_unit:
+tests:
 	python -m pytest \
 	--cov=nornsible \
 	--cov-report html \
