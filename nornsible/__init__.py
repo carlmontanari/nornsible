@@ -4,22 +4,24 @@ from logging import NullHandler
 
 from nornsible.nornsible import (
     InitNornsible,
-    parse_cli_args,
+    nornsible_delegate,
     nornsible_task,
-    patch_config,
-    patch_inventory,
     nornsible_task_message,
+    patch_inventory,
+    parse_cli_args,
+    patch_config,
 )
 
 
 __version__ = "2019.09.17"
 __all__ = (
     "InitNornsible",
-    "parse_cli_args",
+    "nornsible_delegate",
     "nornsible_task",
-    "patch_config",
-    "patch_inventory",
     "nornsible_task_message",
+    "patch_inventory",
+    "parse_cli_args",
+    "patch_config",
 )
 
 

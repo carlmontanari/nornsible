@@ -5,7 +5,7 @@ from unittest.mock import patch
 from nornir import InitNornir
 
 import nornsible
-from nornsible import InitNornsible, nornsible_task
+from nornsible import InitNornsible, nornsible_delegate, nornsible_task
 
 
 NORNSIBLE_DIR = nornsible.__file__
@@ -22,7 +22,12 @@ def custom_task_example_2(task):
     return "Hello, world!"
 
 
-def test_tags_wrapper_skip_task():
+@nornsible_delegate
+def custom_task_example_3(task):
+    return "Hello, world!"
+
+
+def test_nornsible_task_skip_task():
     testargs = ["somescript", "-l", "localhost", "-s", "custom_task_example"]
     with patch.object(sys, "argv", testargs):
         nr = InitNornir(
@@ -32,7 +37,28 @@ def test_tags_wrapper_skip_task():
                     "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                     "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
                 },
-            }
+            },
+            logging={"enabled": False},
+        )
+        nr = InitNornsible(nr)
+        task_result = nr.run(task=custom_task_example)
+        assert set(task_result.keys()) == {"delegate", "localhost"}
+        assert task_result["localhost"].result == "Task skipped!"
+        assert task_result["delegate"].result == "Delegate host, task skipped!"
+
+
+def test_nornsible_task_skip_task_disable_delegate():
+    testargs = ["somescript", "-l", "localhost", "-s", "custom_task_example", "-d"]
+    with patch.object(sys, "argv", testargs):
+        nr = InitNornir(
+            inventory={
+                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
+                "options": {
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                },
+            },
+            logging={"enabled": False},
         )
         nr = InitNornsible(nr)
         task_result = nr.run(task=custom_task_example)
@@ -40,7 +66,7 @@ def test_tags_wrapper_skip_task():
         assert task_result["localhost"].result == "Task skipped!"
 
 
-def test_tags_wrapper_explicit_task():
+def test_nornsible_task_explicit_task():
     testargs = ["somescript", "-l", "localhost", "-t", "custom_task_example_2"]
     with patch.object(sys, "argv", testargs):
         nr = InitNornir(
@@ -50,7 +76,8 @@ def test_tags_wrapper_explicit_task():
                     "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                     "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
                 },
-            }
+            },
+            logging={"enabled": False},
         )
         nr = InitNornsible(nr)
         print(nr.inventory.hosts)
@@ -61,9 +88,11 @@ def test_tags_wrapper_explicit_task():
 
         assert task_results[0]["localhost"].result == "Task skipped!"
         assert task_results[1]["localhost"].result == "Hello, world!"
+        assert task_results[0]["delegate"].result == "Delegate host, task skipped!"
+        assert task_results[1]["delegate"].result == "Delegate host, task skipped!"
 
 
-def test_tags_wrapper_no_tags():
+def test_nornsible_task_no_tags():
     testargs = ["somescript", "-l", "localhost"]
     with patch.object(sys, "argv", testargs):
         nr = InitNornir(
@@ -73,7 +102,8 @@ def test_tags_wrapper_no_tags():
                     "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                     "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
                 },
-            }
+            },
+            logging={"enabled": False},
         )
         nr = InitNornsible(nr)
         print(nr.inventory.hosts)
@@ -84,3 +114,49 @@ def test_tags_wrapper_no_tags():
 
         assert task_results[0]["localhost"].result == "Hello, world!"
         assert task_results[1]["localhost"].result == "Hello, world!"
+
+
+def test_nornsible_delegate():
+    testargs = ["somescript", "-l", "localhost"]
+    with patch.object(sys, "argv", testargs):
+        nr = InitNornir(
+            inventory={
+                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
+                "options": {
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                },
+            },
+            logging={"enabled": False},
+        )
+        nr = InitNornsible(nr)
+        print(nr.inventory.hosts)
+        tasks = [custom_task_example_3]
+        task_results = []
+        for task in tasks:
+            task_results.append(nr.run(task=task))
+
+        assert task_results[0]["localhost"].result == "Delegated task, did not run on this host."
+
+
+def test_nornsible_delegate_disable_delegate():
+    testargs = ["somescript", "-l", "localhost", "-d"]
+    with patch.object(sys, "argv", testargs):
+        nr = InitNornir(
+            inventory={
+                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
+                "options": {
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                },
+            },
+            logging={"enabled": False},
+        )
+        nr = InitNornsible(nr)
+        print(nr.inventory.hosts)
+        tasks = [custom_task_example_3]
+        task_results = []
+        for task in tasks:
+            task_results.append(nr.run(task=task))
+
+        assert task_results[0]["localhost"].result == "Delegated task, did not run on this host."

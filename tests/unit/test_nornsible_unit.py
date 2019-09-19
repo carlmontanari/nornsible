@@ -52,6 +52,7 @@ def test_parse_cli_args_basic_long():
         "render_configs",
         "--workers",
         "10",
+        "--disable-delegate",
     ]
     args = parse_cli_args(args)
     assert args["limit"] == {"sea-eos-1"}
@@ -81,7 +82,8 @@ def test_patch_inventory_basic_limit_host():
                 "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                 "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
             },
-        }
+        },
+        logging={"enabled": False},
     )
     nr.inventory = patch_inventory(args, nr.inventory)
     assert set(nr.inventory.hosts.keys()) == {"sea-eos-1"}
@@ -97,7 +99,8 @@ def test_patch_inventory_basic_limit_group():
                 "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                 "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
             },
-        }
+        },
+        logging={"enabled": False},
     )
     nr.inventory = patch_inventory(args, nr.inventory)
     assert set(nr.inventory.hosts.keys()) == {"sea-eos-1"}
@@ -113,7 +116,8 @@ def test_patch_config_basic_limit_workers():
                 "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                 "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
             },
-        }
+        },
+        logging={"enabled": False},
     )
     nr.config = patch_config(args, nr.config)
     assert nr.config.core.num_workers == 10
@@ -129,7 +133,8 @@ def test_patch_inventory_basic_limit_host_invalid():
                 "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                 "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
             },
-        }
+        },
+        logging={"enabled": False},
     )
     nr.inventory = patch_inventory(args, nr.inventory)
     assert set(nr.inventory.hosts.keys()) == set()
@@ -145,7 +150,8 @@ def test_patch_inventory_basic_limit_group_invalid():
                 "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                 "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
             },
-        }
+        },
+        logging={"enabled": False},
     )
     nr.inventory = patch_inventory(args, nr.inventory)
     assert set(nr.inventory.hosts.keys()) == set()
@@ -161,7 +167,25 @@ def test_set_nornsible_limit_host():
                     "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                     "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
                 },
-            }
+            },
+            logging={"enabled": False},
+        )
+        nr = InitNornsible(nr)
+        assert set(nr.inventory.hosts.keys()) == {"delegate", "sea-eos-1"}
+
+
+def test_set_nornsible_limit_host_disable_delegate():
+    testargs = ["somescript", "-l", "sea-eos-1", "-d"]
+    with patch.object(sys, "argv", testargs):
+        nr = InitNornir(
+            inventory={
+                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
+                "options": {
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                },
+            },
+            logging={"enabled": False},
         )
         nr = InitNornsible(nr)
         assert set(nr.inventory.hosts.keys()) == {"sea-eos-1"}
@@ -177,7 +201,25 @@ def test_set_nornsible_limit_group():
                     "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                     "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
                 },
-            }
+            },
+            logging={"enabled": False},
+        )
+        nr = InitNornsible(nr)
+        assert set(nr.inventory.hosts.keys()) == {"delegate", "sea-eos-1"}
+
+
+def test_set_nornsible_limit_group_disable_delegate():
+    testargs = ["somescript", "-g", "eos", "-d"]
+    with patch.object(sys, "argv", testargs):
+        nr = InitNornir(
+            inventory={
+                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
+                "options": {
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                },
+            },
+            logging={"enabled": False},
         )
         nr = InitNornsible(nr)
         assert set(nr.inventory.hosts.keys()) == {"sea-eos-1"}
@@ -193,7 +235,8 @@ def test_set_nornsible_workers():
                     "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                     "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
                 },
-            }
+            },
+            logging={"enabled": False},
         )
         nr = InitNornsible(nr)
         assert nr.config.core.num_workers == 10
@@ -209,7 +252,25 @@ def test_set_nornsible_limithost_invalid():
                     "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                     "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
                 },
-            }
+            },
+            logging={"enabled": False},
+        )
+        nr = InitNornsible(nr)
+        assert set(nr.inventory.hosts.keys()) == {"delegate"}
+
+
+def test_set_nornsible_limithost_invalid_disable_delegate():
+    testargs = ["somescript", "-l", "sea-eos-1234", "-d"]
+    with patch.object(sys, "argv", testargs):
+        nr = InitNornir(
+            inventory={
+                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
+                "options": {
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                },
+            },
+            logging={"enabled": False},
         )
         nr = InitNornsible(nr)
         assert set(nr.inventory.hosts.keys()) == set()
@@ -225,7 +286,25 @@ def test_set_nornsible_limit_group_invalid():
                     "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                     "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
                 },
-            }
+            },
+            logging={"enabled": False},
+        )
+        nr = InitNornsible(nr)
+        assert set(nr.inventory.hosts.keys()) == {"delegate"}
+
+
+def test_set_nornsible_limit_group_invalid_disable_delegate():
+    testargs = ["somescript", "-g", "eos1234", "-d"]
+    with patch.object(sys, "argv", testargs):
+        nr = InitNornir(
+            inventory={
+                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
+                "options": {
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                },
+            },
+            logging={"enabled": False},
         )
         nr = InitNornsible(nr)
         assert set(nr.inventory.hosts.keys()) == set()
@@ -241,10 +320,29 @@ def test_set_nornsible_do_nothing():
                     "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
                     "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
                 },
-            }
+            },
+            logging={"enabled": False},
         )
         nornsible_nr = InitNornsible(initial_nr)
         assert nornsible_nr == initial_nr
+
+
+def test_set_nornsible_do_nothing_disable_delegate():
+    testargs = ["somescript", "-d"]
+    with patch.object(sys, "argv", testargs):
+        initial_nr = InitNornir(
+            inventory={
+                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
+                "options": {
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                },
+            },
+            logging={"enabled": False},
+        )
+        nornsible_nr = InitNornsible(initial_nr)
+        assert nornsible_nr == initial_nr
+        assert "delegate" not in nornsible_nr.inventory.hosts.keys()
 
 
 def test_process_tags_messages(capfd):

@@ -5,6 +5,7 @@ from typing import Dict, List, Any, Union, Callable
 
 from colorama import Back, Fore, init, Style
 from nornir.core import Nornir, Config, Inventory
+from nornir.core.inventory import Host
 from nornir.core.task import Task
 from nornir.core.task import Result
 
@@ -52,6 +53,9 @@ def parse_cli_args(raw_args: List[str]) -> dict:
         "-t", "--tags", help="names of tasks to explicitly run", type=str.lower, default=""
     )
     parser.add_argument("-s", "--skip", help="names of tasks to skip", type=str.lower, default="")
+    parser.add_argument(
+        "-d", "--disable-delegate", help="disable adding delegate host", action="store_true"
+    )
     args, _ = parser.parse_known_args(raw_args)
     cli_args = {
         "workers": args.workers if args.workers else False,
@@ -59,6 +63,7 @@ def parse_cli_args(raw_args: List[str]) -> dict:
         "groups": set(args.groups.split(",")) if args.groups else False,
         "run_tags": set(args.tags.split(",")) if args.tags else [],
         "skip_tags": set(args.skip.split(",")) if args.skip else [],
+        "disable_delegate": args.disable_delegate,
     }
     return cli_args
 
@@ -102,6 +107,26 @@ def patch_inventory(cli_args: dict, inv: Inventory) -> Inventory:
                 f"{[host for host in invalid_groups]}"
             )
         inv = inv.filter(filter_func=lambda h: any(True for g in valid_groups if g in h.groups))
+
+    return inv
+
+
+def patch_inventory_delegate(inv: Inventory) -> Inventory:
+    """
+    Patch nornir inventory configurations per cli arguments.
+
+    Arguments:
+        inv: nornir.core.inventory.Inventory object; Initialized Nornir Inventory object
+
+    Returns:
+        inv: nornir.core.inventory.Inventory object; Updated Nornir Inventory object
+
+    Raises:
+        N/A  # noqa
+
+    """
+    inv.hosts["delegate"] = Host(name="delegate")
+
     return inv
 
 
@@ -165,6 +190,10 @@ def nornsible_task(wrapped_func: Callable) -> Callable:
     def tag_wrapper(
         task: Task, *args: List[Any], **kwargs: Dict[str, Any]
     ) -> Union[Callable, Result]:
+        if task.host.name == "delegate":
+            return Result(
+                host=task.host, result="Delegate host, task skipped!", failed=False, changed=False
+            )
         if {wrapped_func.__name__}.intersection(task.nornir.skip_tags):
             msg = f"---- {task.host} skipping task {wrapped_func.__name__} "
             nornsible_task_message(msg)
@@ -179,6 +208,37 @@ def nornsible_task(wrapped_func: Callable) -> Callable:
 
     tag_wrapper.__name__ = wrapped_func.__name__
     return tag_wrapper
+
+
+def nornsible_delegate(wrapped_func: Callable) -> Callable:
+    """
+    Decorate an "operation" -- execute only on "delegate" (localhost)
+
+    Args:
+        wrapped_func: function to wrap in delegate_wrapper
+
+    Returns:
+        tag_wrapper: wrapped function
+
+    Raises:
+        N/A  # noqa
+
+    """
+
+    def delegate_wrapper(
+        task: Task, *args: List[Any], **kwargs: Dict[str, Any]
+    ) -> Union[Callable, Result]:
+        if task.host.name != "delegate":
+            return Result(
+                host=task.host,
+                result="Delegated task, did not run on this host.",
+                failed=False,
+                changed=False,
+            )
+        return wrapped_func(task, *args, **kwargs)
+
+    delegate_wrapper.__name__ = wrapped_func.__name__
+    return delegate_wrapper
 
 
 def InitNornsible(nr: Nornir) -> Nornir:
@@ -203,6 +263,8 @@ def InitNornsible(nr: Nornir) -> Nornir:
     if any(a for a in cli_args.values()):
         nr.config = patch_config(cli_args, nr.config)
         nr.inventory = patch_inventory(cli_args, nr.inventory)
-        return nr
+
+    if not cli_args["disable_delegate"]:
+        nr.inventory = patch_inventory_delegate(nr.inventory)
 
     return nr
