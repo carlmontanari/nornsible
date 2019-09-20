@@ -4,6 +4,9 @@ import setuptools
 
 from nornsible import __version__
 
+with open("requirements.txt", "r") as fs:
+    reqs = [r for r in fs.read().splitlines() if (len(r) > 0 and not r.startswith("#"))]
+
 __author__ = "Carl Montanari"
 
 with open("README.md", "r") as f:
@@ -18,7 +21,7 @@ setuptools.setup(
     long_description=README,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    install_requires=[],
+    install_requires=reqs,
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
