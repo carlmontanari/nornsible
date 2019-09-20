@@ -20,7 +20,5 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install setuptools
           python -m pip install tox
-      - name: destroy tox env if its cached?
-        run: rm -rf .tox
       - name: run tox
         run: python -m tox --skip-missing-interpreters=true

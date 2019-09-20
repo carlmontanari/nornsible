@@ -2,9 +2,6 @@
 """nornir tag and host/group limit wrapper"""
 import setuptools
 
-from nornsible import __version__
-
-
 __author__ = "Carl Montanari"
 
 with open("README.md", "r") as f:
@@ -13,16 +10,13 @@ with open("README.md", "r") as f:
 setuptools.setup(
     name="nornsible",
     version=__version__,
-    author=__author__,
+    author="2019.09.20",
     author_email="carl.r.montanari@gmail.com",
     description="Wrapper for tags and host/group limiting for nornir scripts.",
     long_description=README,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    install_requires=[
-        "colorama>=0.3.9",
-        "nornir>=2.2.0",
-    ],
+    install_requires=["colorama>=0.3.9", "nornir>=2.2.0"],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
