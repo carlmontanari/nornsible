@@ -2,6 +2,7 @@
 """nornir tag and host/group limit wrapper"""
 import setuptools
 
+from nornsible import __version__
 
 __author__ = "Carl Montanari"
 
@@ -10,7 +11,7 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name="nornsible",
-    version="2019.09.17",
+    version=__version__,
     author=__author__,
     author_email="carl.r.montanari@gmail.com",
     description="Wrapper for tags and host/group limiting for nornir scripts.",
