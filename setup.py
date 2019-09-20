@@ -4,8 +4,6 @@ import setuptools
 
 from nornsible import __version__
 
-with open("requirements.txt", "r") as fs:
-    reqs = [r for r in fs.read().splitlines() if (len(r) > 0 and not r.startswith("#"))]
 
 __author__ = "Carl Montanari"
 
@@ -21,7 +19,10 @@ setuptools.setup(
     long_description=README,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    install_requires=reqs,
+    install_requires=[
+        "colorama>=0.3.9",
+        "nornir>=2.2.0",
+    ],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
