@@ -1,13 +1,14 @@
 import argparse
+import logging
 import sys
 import threading
-from typing import Dict, List, Any, Union, Callable
+from typing import Dict, List, Any, Union, Callable, Optional
 
 from colorama import Back, Fore, init, Style
 from nornir.core import Nornir, Config, Inventory
 from nornir.core.inventory import Host
-from nornir.core.task import Task
-from nornir.core.task import Result
+from nornir.core.task import AggregatedResult, MultiResult, Result, Task
+from nornir.plugins.functions.text import _print_result
 
 init(autoreset=True, strip=False)
 LOCK = threading.Lock()
@@ -151,12 +152,13 @@ def patch_config(cli_args: dict, conf: Config) -> Config:
     return conf
 
 
-def nornsible_task_message(msg: str) -> None:
+def nornsible_task_message(msg: str, critical: Optional[bool] = False) -> None:
     """
     Handle printing pretty messages for nornsible_task decorator
 
     Args:
         msg: message to beautifully print to stdout
+        critical: (optional) message is critical
 
     Returns:
          N/A
@@ -165,9 +167,16 @@ def nornsible_task_message(msg: str) -> None:
         N/A  # noqa
 
     """
+    if critical:
+        back = Back.RED
+        fore = Fore.WHITE
+    else:
+        back = Back.CYAN
+        fore = Fore.WHITE
+
     LOCK.acquire()
     try:
-        print(f"{Style.BRIGHT}{Back.CYAN}{Fore.WHITE}{msg}{'-' * (80 - len(msg))}")
+        print(f"{Style.BRIGHT}{back}{fore}{msg}{'-' * (80 - len(msg))}")
     finally:
         LOCK.release()
 
@@ -192,7 +201,7 @@ def nornsible_task(wrapped_func: Callable) -> Callable:
     ) -> Union[Callable, Result]:
         if task.host.name == "delegate":
             return Result(
-                host=task.host, result="Delegate host, task skipped!", failed=False, changed=False
+                host=task.host, result="Task skipped, delegate host!", failed=False, changed=False
             )
         if {wrapped_func.__name__}.intersection(task.nornir.skip_tags):
             msg = f"---- {task.host} skipping task {wrapped_func.__name__} "
@@ -228,10 +237,16 @@ def nornsible_delegate(wrapped_func: Callable) -> Callable:
     def delegate_wrapper(
         task: Task, *args: List[Any], **kwargs: Dict[str, Any]
     ) -> Union[Callable, Result]:
+        if "delegate" not in task.nornir.inventory.hosts.keys():
+            msg = f"---- WARNING no delegate available for task {wrapped_func.__name__} "
+            nornsible_task_message(msg, critical=True)
+            return Result(
+                host=task.host, result="Task skipped, delegate host!", failed=False, changed=False
+            )
         if task.host.name != "delegate":
             return Result(
                 host=task.host,
-                result="Delegated task, did not run on this host.",
+                result="Task skipped, non-delegate host!",
                 failed=False,
                 changed=False,
             )
@@ -239,6 +254,34 @@ def nornsible_delegate(wrapped_func: Callable) -> Callable:
 
     delegate_wrapper.__name__ = wrapped_func.__name__
     return delegate_wrapper
+
+
+def print_result(
+    result: Result,
+    host: Optional[str] = None,
+    nr_vars: List[str] = None,
+    failed: bool = False,
+    severity_level: int = logging.INFO,
+) -> None:
+    updated_agg_result = AggregatedResult(result.name)
+    for hostname, multi_result in result.items():
+        updated_multi_result = MultiResult(result.name)
+        for r in multi_result:
+            if isinstance(r.result, str) and r.result.startswith("Task skipped"):
+                continue
+            else:
+                updated_multi_result.append(r)
+        if updated_multi_result:
+            updated_agg_result[hostname] = updated_multi_result
+
+    if not updated_agg_result:
+        return
+
+    LOCK.acquire()
+    try:
+        _print_result(updated_agg_result, host, nr_vars, failed, severity_level)
+    finally:
+        LOCK.release()
 
 
 def InitNornsible(nr: Nornir) -> Nornir:

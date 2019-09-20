@@ -1,19 +1,19 @@
-from pathlib import Path
 import sys
-import threading
+from pathlib import Path
 from unittest.mock import patch
 
 from nornir import InitNornir
+from nornir.core.task import AggregatedResult, MultiResult, Result
 
 import nornsible
 from nornsible import (
     InitNornsible,
+    nornsible_task_message,
     parse_cli_args,
     patch_config,
     patch_inventory,
-    nornsible_task_message,
+    print_result,
 )
-
 
 NORNSIBLE_DIR = nornsible.__file__
 TEST_DIR = f"{Path(NORNSIBLE_DIR).parents[1]}/tests/"
@@ -349,3 +349,24 @@ def test_process_tags_messages(capfd):
     nornsible_task_message("this is a test message")
     std_out, std_err = capfd.readouterr()
     assert "this is a test message" in std_out
+
+
+def test_nornsible_print_task_no_results():
+    test_result = AggregatedResult("testresult")
+    test_result["localhost"] = MultiResult("testresult")
+    test_result["localhost"].append(
+        Result(host="localhost", result="Task skipped", failed=False, changed=False)
+    )
+    output = print_result(test_result)
+    assert output is None
+
+
+def test_nornsible_print_task_results(capfd):
+    test_result = AggregatedResult("testresult")
+    test_result["localhost"] = MultiResult("testresult")
+    test_result["localhost"].append(
+        Result(host="localhost", result="stuff happening!", failed=False, changed=False)
+    )
+    print_result(test_result)
+    std_out, std_err = capfd.readouterr()
+    assert "stuff happening" in std_out

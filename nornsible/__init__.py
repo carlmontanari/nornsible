@@ -10,6 +10,7 @@ from nornsible.nornsible import (
     patch_inventory,
     parse_cli_args,
     patch_config,
+    print_result,
 )
 
 
@@ -22,6 +23,7 @@ __all__ = (
     "patch_inventory",
     "parse_cli_args",
     "patch_config",
+    "print_result",
 )
 
 

@@ -44,7 +44,7 @@ def test_nornsible_task_skip_task():
         task_result = nr.run(task=custom_task_example)
         assert set(task_result.keys()) == {"delegate", "localhost"}
         assert task_result["localhost"].result == "Task skipped!"
-        assert task_result["delegate"].result == "Delegate host, task skipped!"
+        assert task_result["delegate"].result == "Task skipped, delegate host!"
 
 
 def test_nornsible_task_skip_task_disable_delegate():
@@ -88,8 +88,8 @@ def test_nornsible_task_explicit_task():
 
         assert task_results[0]["localhost"].result == "Task skipped!"
         assert task_results[1]["localhost"].result == "Hello, world!"
-        assert task_results[0]["delegate"].result == "Delegate host, task skipped!"
-        assert task_results[1]["delegate"].result == "Delegate host, task skipped!"
+        assert task_results[0]["delegate"].result == "Task skipped, delegate host!"
+        assert task_results[1]["delegate"].result == "Task skipped, delegate host!"
 
 
 def test_nornsible_task_no_tags():
@@ -136,7 +136,7 @@ def test_nornsible_delegate():
         for task in tasks:
             task_results.append(nr.run(task=task))
 
-        assert task_results[0]["localhost"].result == "Delegated task, did not run on this host."
+        assert task_results[0]["localhost"].result == "Task skipped, non-delegate host!"
 
 
 def test_nornsible_delegate_disable_delegate():
@@ -159,4 +159,4 @@ def test_nornsible_delegate_disable_delegate():
         for task in tasks:
             task_results.append(nr.run(task=task))
 
-        assert task_results[0]["localhost"].result == "Delegated task, did not run on this host."
+        assert task_results[0]["localhost"].result == "Task skipped, delegate host!"
