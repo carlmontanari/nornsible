@@ -94,10 +94,7 @@ def patch_inventory(cli_args: dict, inv: Inventory) -> Inventory:
             else:
                 invalid_hosts.append(host)
         if invalid_hosts:
-            print(
-                "Host limit contained invalid host(s), ignoring: "
-                f"{[host for host in invalid_hosts]}"
-            )
+            print(f"Host limit contained invalid host(s), ignoring: {invalid_hosts}")
         inv = inv.filter(filter_func=lambda h: h.name.lower() in valid_hosts)
 
     elif cli_args["groups"]:
@@ -105,11 +102,12 @@ def patch_inventory(cli_args: dict, inv: Inventory) -> Inventory:
         valid_groups = [g for g in cli_args["groups"] if g in lower_groups]
         invalid_groups = [g for g in cli_args["groups"] if g not in lower_groups]
         if invalid_groups:
-            print(
-                "Group limit contained invalid group(s), ignoring: "
-                f"{[host for host in invalid_groups]}"
+            print(f"Group limit contained invalid group(s), ignoring: {invalid_groups}")
+        inv = inv.filter(
+            filter_func=lambda h: any(
+                True for g in valid_groups for hg in h.groups if g == hg.lower()
             )
-        inv = inv.filter(filter_func=lambda h: any(True for g in valid_groups for hg in h.groups if g == hg.lower()))
+        )
 
     return inv
 
@@ -271,10 +269,9 @@ def print_result(
         for r in multi_result:
             if isinstance(r.result, str) and r.result.startswith("Task skipped"):
                 continue
-            else:
-                updated_multi_result.append(r)
+            updated_multi_result.append(r)
         if updated_multi_result:
-            updated_agg_result[hostname] = updated_multi_result
+            updated_agg_result[hostname] = updated_multi_result  # noqa
 
     if not updated_agg_result:
         return

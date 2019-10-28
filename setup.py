@@ -9,7 +9,7 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name="nornsible",
-    version="2019.09.20",
+    version="2019.10.28",
     author=__author__,
     author_email="carl.r.montanari@gmail.com",
     description="Wrapper for tags and host/group limiting for nornir scripts.",

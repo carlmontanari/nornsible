@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.6.3" />
+<meta name="generator" content="pdoc 0.7.1" />
 <title>nornsible API documentation</title>
 <meta name="description" content="nornir tag and host/group limit wrapper" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
 </head>
@@ -22,29 +22,35 @@
 <section id="section-intro">
 <p>nornir tag and host/group limit wrapper</p>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">&#34;&#34;&#34;nornir tag and host/group limit wrapper&#34;&#34;&#34;
 import logging
 from logging import NullHandler
 
 from nornsible.nornsible import (
     InitNornsible,
-    parse_cli_args,
+    nornsible_delegate,
     nornsible_task,
-    patch_config,
-    patch_inventory,
     nornsible_task_message,
+    patch_inventory,
+    parse_cli_args,
+    patch_config,
+    print_result,
 )
 
 
-__version__ = &#34;2019.09.16&#34;
+__version__ = &#34;2019.09.20&#34;
 __all__ = (
     &#34;InitNornsible&#34;,
-    &#34;parse_cli_args&#34;,
+    &#34;nornsible_delegate&#34;,
     &#34;nornsible_task&#34;,
-    &#34;patch_config&#34;,
-    &#34;patch_inventory&#34;,
     &#34;nornsible_task_message&#34;,
+    &#34;patch_inventory&#34;,
+    &#34;parse_cli_args&#34;,
+    &#34;patch_config&#34;,
+    &#34;print_result&#34;,
 )
 
 
@@ -89,8 +95,10 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 <dd>&nbsp;</dd>
 </dl></section>
 <details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def InitNornsible(nr):
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def InitNornsible(nr: Nornir) -&gt; Nornir:
     &#34;&#34;&#34;
     Patch nornir object based on cli arguments
 
@@ -112,9 +120,73 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
     if any(a for a in cli_args.values()):
         nr.config = patch_config(cli_args, nr.config)
         nr.inventory = patch_inventory(cli_args, nr.inventory)
-        return nr
+
+    if not cli_args[&#34;disable_delegate&#34;]:
+        nr.inventory = patch_inventory_delegate(nr.inventory)
 
     return nr</code></pre>
+</details>
+</dd>
+<dt id="nornsible.nornsible_delegate"><code class="name flex">
+<span>def <span class="ident">nornsible_delegate</span></span>(<span>wrapped_func)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Decorate an "operation" &ndash; execute only on "delegate" (localhost)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>wrapped_func</code></strong></dt>
+<dd>function to wrap in delegate_wrapper</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>tag_wrapper</code></strong></dt>
+<dd>wrapped function</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>N</code>/<code>A</code>
+# <code>noqa</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def nornsible_delegate(wrapped_func: Callable) -&gt; Callable:
+    &#34;&#34;&#34;
+    Decorate an &#34;operation&#34; -- execute only on &#34;delegate&#34; (localhost)
+
+    Args:
+        wrapped_func: function to wrap in delegate_wrapper
+
+    Returns:
+        tag_wrapper: wrapped function
+
+    Raises:
+        N/A  # noqa
+
+    &#34;&#34;&#34;
+
+    def delegate_wrapper(
+        task: Task, *args: List[Any], **kwargs: Dict[str, Any]
+    ) -&gt; Union[Callable, Result]:
+        if &#34;delegate&#34; not in task.nornir.inventory.hosts.keys():
+            msg = f&#34;---- WARNING no delegate available for task {wrapped_func.__name__} &#34;
+            nornsible_task_message(msg, critical=True)
+            return Result(
+                host=task.host, result=&#34;Task skipped, delegate host!&#34;, failed=False, changed=False
+            )
+        if task.host.name != &#34;delegate&#34;:
+            return Result(
+                host=task.host,
+                result=&#34;Task skipped, non-delegate host!&#34;,
+                failed=False,
+                changed=False,
+            )
+        return wrapped_func(task, *args, **kwargs)
+
+    delegate_wrapper.__name__ = wrapped_func.__name__
+    return delegate_wrapper</code></pre>
 </details>
 </dd>
 <dt id="nornsible.nornsible_task"><code class="name flex">
@@ -139,8 +211,10 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 <dd>&nbsp;</dd>
 </dl></section>
 <details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def nornsible_task(wrapped_func):
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def nornsible_task(wrapped_func: Callable) -&gt; Callable:
     &#34;&#34;&#34;
     Decorate an &#34;operation&#34; -- execute or skip the operation based on tags
 
@@ -155,7 +229,13 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 
     &#34;&#34;&#34;
 
-    def tag_wrapper(task, *args, **kwargs):
+    def tag_wrapper(
+        task: Task, *args: List[Any], **kwargs: Dict[str, Any]
+    ) -&gt; Union[Callable, Result]:
+        if task.host.name == &#34;delegate&#34;:
+            return Result(
+                host=task.host, result=&#34;Task skipped, delegate host!&#34;, failed=False, changed=False
+            )
         if {wrapped_func.__name__}.intersection(task.nornir.skip_tags):
             msg = f&#34;---- {task.host} skipping task {wrapped_func.__name__} &#34;
             nornsible_task_message(msg)
@@ -173,7 +253,7 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 </details>
 </dd>
 <dt id="nornsible.nornsible_task_message"><code class="name flex">
-<span>def <span class="ident">nornsible_task_message</span></span>(<span>msg)</span>
+<span>def <span class="ident">nornsible_task_message</span></span>(<span>msg, critical=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Handle printing pretty messages for nornsible_task decorator</p>
@@ -181,6 +261,8 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 <dl>
 <dt><strong><code>msg</code></strong></dt>
 <dd>message to beautifully print to stdout</dd>
+<dt><strong><code>critical</code></strong></dt>
+<dd>(optional) message is critical</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -194,13 +276,16 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 <dd>&nbsp;</dd>
 </dl></section>
 <details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def nornsible_task_message(msg):
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def nornsible_task_message(msg: str, critical: Optional[bool] = False) -&gt; None:
     &#34;&#34;&#34;
     Handle printing pretty messages for nornsible_task decorator
 
     Args:
         msg: message to beautifully print to stdout
+        critical: (optional) message is critical
 
     Returns:
          N/A
@@ -209,21 +294,28 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
         N/A  # noqa
 
     &#34;&#34;&#34;
+    if critical:
+        back = Back.RED
+        fore = Fore.WHITE
+    else:
+        back = Back.CYAN
+        fore = Fore.WHITE
+
     LOCK.acquire()
     try:
-        print(f&#34;{Style.BRIGHT}{Back.CYAN}{Fore.WHITE}{msg}{&#39;-&#39; * (80 - len(msg))}&#34;)
+        print(f&#34;{Style.BRIGHT}{back}{fore}{msg}{&#39;-&#39; * (80 - len(msg))}&#34;)
     finally:
         LOCK.release()</code></pre>
 </details>
 </dd>
 <dt id="nornsible.parse_cli_args"><code class="name flex">
-<span>def <span class="ident">parse_cli_args</span></span>(<span>args)</span>
+<span>def <span class="ident">parse_cli_args</span></span>(<span>raw_args)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Parse CLI provided arguments; ignore unrecognized.</p>
 <h2 id="arguments">Arguments</h2>
 <dl>
-<dt><strong><code>args</code></strong></dt>
+<dt><strong><code>raw_args</code></strong></dt>
 <dd>List of CLI provided arguments</dd>
 </dl>
 <h2 id="returns">Returns</h2>
@@ -238,13 +330,15 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 <dd>&nbsp;</dd>
 </dl></section>
 <details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def parse_cli_args(args: list) -&gt; dict:
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse_cli_args(raw_args: List[str]) -&gt; dict:
     &#34;&#34;&#34;
     Parse CLI provided arguments; ignore unrecognized.
 
     Arguments:
-        args: List of CLI provided arguments
+        raw_args: List of CLI provided arguments
 
     Returns:
         cli_args: Processed CLI arguments
@@ -279,13 +373,18 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
         &#34;-t&#34;, &#34;--tags&#34;, help=&#34;names of tasks to explicitly run&#34;, type=str.lower, default=&#34;&#34;
     )
     parser.add_argument(&#34;-s&#34;, &#34;--skip&#34;, help=&#34;names of tasks to skip&#34;, type=str.lower, default=&#34;&#34;)
-    args, _ = parser.parse_known_args(args)
-    cli_args = {}
-    cli_args[&#34;workers&#34;] = args.workers if args.workers else False
-    cli_args[&#34;limit&#34;] = set(args.limit.split(&#34;,&#34;)) if args.limit else False
-    cli_args[&#34;groups&#34;] = set(args.groups.split(&#34;,&#34;)) if args.groups else False
-    cli_args[&#34;run_tags&#34;] = set(args.tags.split(&#34;,&#34;)) if args.tags else []
-    cli_args[&#34;skip_tags&#34;] = set(args.skip.split(&#34;,&#34;)) if args.skip else []
+    parser.add_argument(
+        &#34;-d&#34;, &#34;--disable-delegate&#34;, help=&#34;disable adding delegate host&#34;, action=&#34;store_true&#34;
+    )
+    args, _ = parser.parse_known_args(raw_args)
+    cli_args = {
+        &#34;workers&#34;: args.workers if args.workers else False,
+        &#34;limit&#34;: set(args.limit.split(&#34;,&#34;)) if args.limit else False,
+        &#34;groups&#34;: set(args.groups.split(&#34;,&#34;)) if args.groups else False,
+        &#34;run_tags&#34;: set(args.tags.split(&#34;,&#34;)) if args.tags else [],
+        &#34;skip_tags&#34;: set(args.skip.split(&#34;,&#34;)) if args.skip else [],
+        &#34;disable_delegate&#34;: args.disable_delegate,
+    }
     return cli_args</code></pre>
 </details>
 </dd>
@@ -313,8 +412,10 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 <dd>&nbsp;</dd>
 </dl></section>
 <details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def patch_config(cli_args: dict, conf):
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def patch_config(cli_args: dict, conf: Config) -&gt; Config:
     &#34;&#34;&#34;
     Patch nornir core configurations per cli arguments.
 
@@ -359,8 +460,10 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 <dd>&nbsp;</dd>
 </dl></section>
 <details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def patch_inventory(cli_args: dict, inv):
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def patch_inventory(cli_args: dict, inv: Inventory) -&gt; Inventory:
     &#34;&#34;&#34;
     Patch nornir inventory configurations per cli arguments.
 
@@ -376,30 +479,67 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 
     &#34;&#34;&#34;
     if cli_args[&#34;limit&#34;]:
+        lower_hosts = [h.lower() for h in inv.hosts.keys()]
         valid_hosts = []
         invalid_hosts = []
         for host in cli_args[&#34;limit&#34;]:
-            if host in inv.hosts.keys():
+            if host in lower_hosts:
                 valid_hosts.append(host)
             else:
                 invalid_hosts.append(host)
         if invalid_hosts:
-            print(
-                &#34;Host limit contained invalid host(s), ignoring: &#34;
-                f&#34;{[host for host in invalid_hosts]}&#34;
-            )
-        inv = inv.filter(filter_func=lambda h: h.name in valid_hosts)
+            print(f&#34;Host limit contained invalid host(s), ignoring: {invalid_hosts}&#34;)
+        inv = inv.filter(filter_func=lambda h: h.name.lower() in valid_hosts)
 
     elif cli_args[&#34;groups&#34;]:
-        valid_groups = [g for g in cli_args[&#34;groups&#34;] if g in inv.groups.keys()]
-        invalid_groups = [g for g in cli_args[&#34;groups&#34;] if g not in inv.groups.keys()]
+        lower_groups = [g.lower() for g in inv.groups.keys()]
+        valid_groups = [g for g in cli_args[&#34;groups&#34;] if g in lower_groups]
+        invalid_groups = [g for g in cli_args[&#34;groups&#34;] if g not in lower_groups]
         if invalid_groups:
-            print(
-                &#34;Group limit contained invalid group(s), ignoring: &#34;
-                f&#34;{[host for host in invalid_groups]}&#34;
+            print(f&#34;Group limit contained invalid group(s), ignoring: {invalid_groups}&#34;)
+        inv = inv.filter(
+            filter_func=lambda h: any(
+                True for g in valid_groups for hg in h.groups if g == hg.lower()
             )
-        inv = inv.filter(filter_func=lambda h: any(True for g in valid_groups if g in h.groups))
+        )
+
     return inv</code></pre>
+</details>
+</dd>
+<dt id="nornsible.print_result"><code class="name flex">
+<span>def <span class="ident">print_result</span></span>(<span>result, host=None, nr_vars=None, failed=False, severity_level=20)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print_result(
+    result: Result,
+    host: Optional[str] = None,
+    nr_vars: List[str] = None,
+    failed: bool = False,
+    severity_level: int = logging.INFO,
+) -&gt; None:
+    updated_agg_result = AggregatedResult(result.name)
+    for hostname, multi_result in result.items():
+        updated_multi_result = MultiResult(result.name)
+        for r in multi_result:
+            if isinstance(r.result, str) and r.result.startswith(&#34;Task skipped&#34;):
+                continue
+            updated_multi_result.append(r)
+        if updated_multi_result:
+            updated_agg_result[hostname] = updated_multi_result  # noqa
+
+    if not updated_agg_result:
+        return
+
+    LOCK.acquire()
+    try:
+        _print_result(updated_agg_result, host, nr_vars, failed, severity_level)
+    finally:
+        LOCK.release()</code></pre>
 </details>
 </dd>
 </dl>
@@ -421,18 +561,20 @@ logging.getLogger(__name__).addHandler(NullHandler())</code></pre>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="nornsible.InitNornsible" href="#nornsible.InitNornsible">InitNornsible</a></code></li>
+<li><code><a title="nornsible.nornsible_delegate" href="#nornsible.nornsible_delegate">nornsible_delegate</a></code></li>
 <li><code><a title="nornsible.nornsible_task" href="#nornsible.nornsible_task">nornsible_task</a></code></li>
 <li><code><a title="nornsible.nornsible_task_message" href="#nornsible.nornsible_task_message">nornsible_task_message</a></code></li>
 <li><code><a title="nornsible.parse_cli_args" href="#nornsible.parse_cli_args">parse_cli_args</a></code></li>
 <li><code><a title="nornsible.patch_config" href="#nornsible.patch_config">patch_config</a></code></li>
 <li><code><a title="nornsible.patch_inventory" href="#nornsible.patch_inventory">patch_inventory</a></code></li>
+<li><code><a title="nornsible.print_result" href="#nornsible.print_result">print_result</a></code></li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.3</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.1</a>.</p>
 </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad()</script>

@@ -14,7 +14,7 @@ from nornsible.nornsible import (
 )
 
 
-__version__ = "2019.09.20"
+__version__ = "2019.10.28"
 __all__ = (
     "InitNornsible",
     "nornsible_delegate",
