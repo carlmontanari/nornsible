@@ -11,5 +11,10 @@ sea-nxos-1:
     - sea
     - nxos
 
+UPPER-HOST:
+  hostname: 5.4.3.2
+  groups:
+    - UPPER
+
 localhost:
   hostname: 127.0.0.1
