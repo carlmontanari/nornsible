@@ -4,11 +4,12 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     strategy:
       max-parallel: 2
       matrix:
         python-version: [3.6, 3.7]
+        platform: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v1
       - name: set up python ${{ matrix.python-version }}
