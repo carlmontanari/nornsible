@@ -6,14 +6,11 @@ from nornir import InitNornir
 from nornir.core.task import AggregatedResult, MultiResult, Result
 
 import nornsible
-from nornsible import (
-    InitNornsible,
-    nornsible_task_message,
-    parse_cli_args,
-    patch_config,
-    patch_inventory,
-    print_result,
-)
+from nornsible import InitNornsible, print_result
+from nornsible.nornsible import patch_config, patch_inventory
+from nornsible.cli import parse_cli_args
+from nornsible.decorators import nornsible_task_message
+
 
 NORNSIBLE_DIR = nornsible.__file__
 TEST_DIR = f"{Path(NORNSIBLE_DIR).parents[1]}/tests/"
@@ -79,8 +76,8 @@ def test_patch_inventory_basic_limit_host():
         inventory={
             "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
             "options": {
-                "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
             },
         },
         logging={"enabled": False},
@@ -97,8 +94,8 @@ def test_patch_inventory_limit_host_ignore_case():
         inventory={
             "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
             "options": {
-                "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
             },
         },
         logging={"enabled": False},
@@ -114,8 +111,8 @@ def test_patch_inventory_basic_limit_group():
         inventory={
             "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
             "options": {
-                "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
             },
         },
         logging={"enabled": False},
@@ -131,8 +128,8 @@ def test_patch_inventory_limit_group_ignore_case():
         inventory={
             "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
             "options": {
-                "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
             },
         },
         logging={"enabled": False},
@@ -148,8 +145,8 @@ def test_patch_config_basic_limit_workers():
         inventory={
             "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
             "options": {
-                "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
             },
         },
         logging={"enabled": False},
@@ -165,8 +162,8 @@ def test_patch_inventory_basic_limit_host_invalid():
         inventory={
             "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
             "options": {
-                "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
             },
         },
         logging={"enabled": False},
@@ -182,8 +179,8 @@ def test_patch_inventory_basic_limit_group_invalid():
         inventory={
             "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
             "options": {
-                "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
             },
         },
         logging={"enabled": False},
@@ -199,8 +196,8 @@ def test_set_nornsible_limit_host():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -216,8 +213,8 @@ def test_set_nornsible_limit_host_disable_delegate():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -233,8 +230,8 @@ def test_set_nornsible_limit_group():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -250,8 +247,8 @@ def test_set_nornsible_limit_group_disable_delegate():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -267,8 +264,8 @@ def test_set_nornsible_workers():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -284,8 +281,8 @@ def test_set_nornsible_limithost_invalid():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -301,8 +298,8 @@ def test_set_nornsible_limithost_invalid_disable_delegate():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -318,8 +315,8 @@ def test_set_nornsible_limit_group_invalid():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -335,8 +332,8 @@ def test_set_nornsible_limit_group_invalid_disable_delegate():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -352,8 +349,8 @@ def test_set_nornsible_do_nothing():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -369,8 +366,8 @@ def test_set_nornsible_do_nothing_disable_delegate():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},

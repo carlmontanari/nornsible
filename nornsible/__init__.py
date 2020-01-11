@@ -1,28 +1,20 @@
-"""nornir tag and host/group limit wrapper"""
+"""ansible-like inventory utility for nornir"""
 import logging
 from logging import NullHandler
 
-from nornsible.nornsible import (
-    InitNornsible,
-    nornsible_delegate,
-    nornsible_task,
-    nornsible_task_message,
-    patch_inventory,
-    parse_cli_args,
-    patch_config,
-    print_result,
-)
+from nornsible.decorators import nornsible_delegate, nornsible_task
+
+from nornsible.nornsible import InitNornsible
+from nornsible.functions import print_result
+from nornsible.inventory import AnsibleInventory
 
 
-__version__ = "2019.11.05"
+__version__ = "2020.01.11"
 __all__ = (
+    "AnsibleInventory",
     "InitNornsible",
     "nornsible_delegate",
     "nornsible_task",
-    "nornsible_task_message",
-    "patch_inventory",
-    "parse_cli_args",
-    "patch_config",
     "print_result",
 )
 

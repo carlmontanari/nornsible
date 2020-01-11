@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""nornir tag and host/group limit wrapper"""
+"""ansible-like inventory utility for nornir"""
 import setuptools
 
 __author__ = "Carl Montanari"
@@ -9,10 +9,10 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name="nornsible",
-    version="2019.11.05",
+    version="2020.01.11",
     author=__author__,
     author_email="carl.r.montanari@gmail.com",
-    description="Wrapper for tags and host/group limiting for nornir scripts.",
+    description="Ansible-like inventory utility for Nornir.",
     long_description=README,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),

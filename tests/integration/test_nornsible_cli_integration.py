@@ -34,8 +34,8 @@ def test_nornsible_task_skip_task():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -54,8 +54,8 @@ def test_nornsible_task_skip_task_disable_delegate():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -73,8 +73,8 @@ def test_nornsible_task_explicit_task():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -99,8 +99,8 @@ def test_nornsible_task_no_tags():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -123,8 +123,8 @@ def test_nornsible_delegate():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
@@ -146,8 +146,8 @@ def test_nornsible_delegate_disable_delegate():
             inventory={
                 "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
                 "options": {
-                    "host_file": f"{TEST_DIR}_test_nornir_inventory/hosts.yaml",
-                    "group_file": f"{TEST_DIR}_test_nornir_inventory/groups.yaml",
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
                 },
             },
             logging={"enabled": False},
