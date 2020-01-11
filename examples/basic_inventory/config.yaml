@@ -1,0 +1,4 @@
+inventory:
+  plugin: nornsible.inventory.AnsibleInventory
+  options:
+    inventory: inventory.yaml

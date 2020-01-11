@@ -5,24 +5,36 @@
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
 [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-nornsible
+Nornsible
 =======
 
-Wrap Nornir with Ansible-like host/group limits and tagging!
+Bring some of the nice things about Ansible to Nornir!
 
-The idea behind nornsible is to allow for Nornir scripts to be written to operate on an entire environment, and then limited to a subset of host(s) based on simple command line arguments. Of course you can simply do this yourself, but why not let nornsible handle it for you!
+The idea behind Nornsible is to allow for Nornir scripts to be written to operate on an entire environment, and then limited to a subset of host(s) based on simple command line arguments. Of course you can simply do this yourself, but why not let nornsible handle it for you!
 
 Nornsible provides the ability to -- via command line arguments -- filter Nornir inventories by hostname or group name, or both. There is also a handy flag to set the number of workers; quite useful for setting workers equal to 1 for troubleshooting purposes.
 
-Lastly, nornsible supports the concept of tags. Tags correspond to the name of *custom* tasks and operate very much like tags in Ansible. Provide a list of tags to execute, and Nornsible will ensure that Nornir only runs those tasks. Provide a list of tags to skip, and Nornsible will ensure that Nornir only runs those not in that list. Easy peasy.
+Nornsible all supports the concept of tags. Tags correspond to the name of *custom* tasks and operate very much like tags in Ansible. Provide a list of tags to execute, and Nornsible will ensure that Nornir only runs those tasks. Provide a list of tags to skip, and Nornsible will ensure that Nornir only runs those not in that list. Easy peasy.
+
+Finally, Nornsible supports multiple inventory files as well as dynamic inventory files -- just like Ansible.
 
 
-# How does nornsible work?
+# How does Nornsible work?
 
 Nornsible accepts an instantiated Nornir object as an argument and returns a slightly modified Nornir object. Nornsible sets the desired number of workers if applicable, and adds an attribute for "run_tags" and "skip_tags" based on your command line input.
 
 To take advantage of the tags feature Nornsible provides a decorator that you can use to wrap your custom tasks. This decorator inspects the task being ran and checks the task name against the lists of run and skip tags. If the task is allowed, Nornsible simply allows the task to run as per normal, if it is *not* allowed, Nornsible will print a pretty message and move on.
 
+Nornsible inventory can be used by simply installing Nornsible and setting the inventory plugin in your config file as follows:
+
+```yaml
+inventory:
+  plugin: nornsible.inventory.AnsibleInventory
+  options:
+    inventory: inventory.yaml
+```
+
+Note that instead of `hostsfile` Nornsible inventory uses `inventory` -- this is intentional to make sure to differentiate between the standard Nornir Ansible support and nornsible.
 
 # Caveats
 
@@ -137,3 +149,8 @@ I broke testing into two main categories -- unit and integration. Unit is what y
 # To Do
 
 - Add handling for "not" in host/group limit; i.e.: "-t !localhost" to run against all hosts *not* localhost.
+- Add more examples for using nornsible inventory in different ways -- i.e. multiple inventory, dynamic inventory, hash_behavior settings, etc.
+- Add more detailed readme info on inventory stuff.
+- Add support for host/group vars in directories in the host/group vars parent directory...
+    - i.e. `host_vars/myhost/somevar1.yaml` and `host_vars/myhost/somevar2.yaml`
+- Add integration testing for inventory bits.

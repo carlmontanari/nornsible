@@ -1,0 +1,7 @@
+---
+all:
+  children:
+    ios:
+      hosts:
+        c3560:
+          ansible_host: c3560x
