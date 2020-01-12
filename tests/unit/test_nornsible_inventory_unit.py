@@ -23,7 +23,7 @@ def read(hosts_file, groups_file, defaults_file):
 
 
 def test_no_nornir_valid_inventory_exception():
-    # not sure how best to test the actual inventory.py file (for coverage and completeness)
+    #  test import try/except in inventory
     pass
 
 
@@ -151,12 +151,13 @@ def test_ansible_inventory_basic_script():
     assert inv_serialized["defaults"] == expected_defaults
 
 
-def test_ansible_inventory_no_valid_inventory():
+@pytest.mark.parametrize("case", ["no_source", "parse_error"])
+def test_ansible_inventory_no_valid_inventory(case):
     with pytest.raises(NornirNoValidInventoryError):
-        AnsibleInventory(f"{TEST_DIR}_test_nornir_inventory/invalid/invalid_ini.ini")
+        AnsibleInventory(f"{TEST_DIR}_test_nornir_inventory/{case}/")
 
 
-@pytest.mark.parametrize("case", ["multiple_sources"])
+@pytest.mark.parametrize("case", ["multiple_sources", "multiple_sources_2"])
 @pytest.mark.parametrize("hash_behavior", ["replace", "merge"])
 def test_inventory_multiple_source(case, hash_behavior):
     hosts_file = f"{TEST_DIR}_test_nornir_inventory/{case}/expected/{hash_behavior}/hosts.yaml"
