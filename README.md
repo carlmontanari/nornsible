@@ -156,3 +156,4 @@ I broke testing into two main categories -- unit and integration. Unit is what y
 - Add integration testing for inventory bits.
 - Fix/add logging -- ensure inventory logs to nornir log as per usual, but also create a nornsible log for all nornsible "stuff".
 - Investigate adding a `-C` flag for check mode -- would likely only be able to support netmiko/napalm tasks... not sure best way to do this but would be a nice feature!
+- Investigate adding a retry wrapper. Would need to clear failed hosts before retrying tasks. Easily done in normal nornir stuff directly, but could be nice to have here.
