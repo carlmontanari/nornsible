@@ -155,3 +155,4 @@ I broke testing into two main categories -- unit and integration. Unit is what y
     - i.e. `host_vars/myhost/somevar1.yaml` and `host_vars/myhost/somevar2.yaml`
 - Add integration testing for inventory bits.
 - Fix/add logging -- ensure inventory logs to nornir log as per usual, but also create a nornsible log for all nornsible "stuff".
+- Investigate adding a `-C` flag for check mode -- would likely only be able to support netmiko/napalm tasks... not sure best way to do this but would be a nice feature!
