@@ -1,9 +1,46 @@
 import sys
+from typing import List
 
 from nornir.core import Nornir, Config, Inventory
 from nornir.core.inventory import Host
 
 from nornsible.cli import parse_cli_args
+
+
+def _filter_host(
+    host: Host, include_valid_hosts: List[str], skip_valid_hosts: List[str], invalid_hosts: bool
+) -> bool:
+    """
+    Filter function used to filter hosts for inventory
+
+    Arguments:
+        host: nornir.core.inventory.Host object to determine if it should be filtered or not
+        include_valid_hosts: list of valid hosts to include in final inventory
+        skip_valid_hosts: list of valid hosts to exclude in final inventory
+
+    Returns:
+        bool: True/False if host should be included in final inventory
+
+    Raises:
+        N/A  # noqa
+
+    """
+    # if host is in skip list, always skip it
+    if host.name.lower() in skip_valid_hosts:
+        return False
+    # if include list is not empty...
+    if include_valid_hosts:
+        # only include hosts if explicitly specified
+        if host.name.lower() in include_valid_hosts:
+            return True
+        # otherwise exclude
+        return False
+    # if any invalid hosts were included in the filter, do not include hosts -- fail safely!
+    if invalid_hosts:
+        return False
+    # if host was not skipped, no hosts were explicitly specified, and no invalid hosts provided...
+    # include the host
+    return True
 
 
 def patch_inventory(cli_args: dict, inv: Inventory) -> Inventory:
@@ -23,16 +60,26 @@ def patch_inventory(cli_args: dict, inv: Inventory) -> Inventory:
     """
     if cli_args["limit"]:
         lower_hosts = [h.lower() for h in inv.hosts.keys()]
-        valid_hosts = []
+        include_valid_hosts = []
+        skip_valid_hosts = []
         invalid_hosts = []
         for host in cli_args["limit"]:
-            if host in lower_hosts:
-                valid_hosts.append(host)
+            normalize_host = host.replace("!", "")
+            if normalize_host not in lower_hosts:
+                invalid_hosts.append(normalize_host)
+                continue
+            if host.startswith("!"):
+                skip_valid_hosts.append(normalize_host)
             else:
-                invalid_hosts.append(host)
+                include_valid_hosts.append(normalize_host)
         if invalid_hosts:
             print(f"Host limit contained invalid host(s), ignoring: {invalid_hosts}")
-        inv = inv.filter(filter_func=lambda h: h.name.lower() in valid_hosts)
+        inv = inv.filter(
+            filter_func=_filter_host,
+            include_valid_hosts=include_valid_hosts,
+            skip_valid_hosts=skip_valid_hosts,
+            invalid_hosts=bool(invalid_hosts),
+        )
 
     elif cli_args["groups"]:
         lower_groups = [g.lower() for g in inv.groups.keys()]

@@ -35,6 +35,7 @@ from nornir.plugins.inventory.ansible import (
 )
 from ruamel.yaml.composer import ComposerError
 from ruamel.yaml.scanner import ScannerError
+from ruamel.yaml.parser import ParserError
 
 NORNIR_LOGGER = logging.getLogger("nornir")
 VARS_FILENAME_EXTENSIONS.append(".py")
@@ -243,7 +244,7 @@ class AnsibleInventory(Inventory):
                 parser = YAMLParser(possible_source)
                 valid_sources.append(parser)
                 continue
-            except (ScannerError, ComposerError):
+            except (ScannerError, ComposerError, ParserError):
                 NORNIR_LOGGER.info(
                     "AnsibleInventory: file %r is not YAML file, moving to next parser...",
                     possible_source,

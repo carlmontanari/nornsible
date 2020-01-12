@@ -10,13 +10,15 @@ Nornsible
 
 Bring some of the nice things about Ansible to Nornir!
 
-The idea behind Nornsible is to allow for Nornir scripts to be written to operate on an entire environment, and then limited to a subset of host(s) based on simple command line arguments. Of course you can simply do this yourself, but why not let nornsible handle it for you!
+The idea behind Nornsible is to bring some great features of Ansible to Nornir. Specifically tagging, host limiting, and dynamic inventory/multiple inventory sources. 
 
 Nornsible provides the ability to -- via command line arguments -- filter Nornir inventories by hostname or group name, or both. There is also a handy flag to set the number of workers; quite useful for setting workers equal to 1 for troubleshooting purposes.
 
 Nornsible also supports the concept of tags. Tags correspond to the name of *custom* tasks and operate very much like tags in Ansible. Provide a list of tags to execute, and Nornsible will ensure that Nornir only runs those tasks. Provide a list of tags to skip, and Nornsible will ensure that Nornir only runs those not in that list. Easy peasy.
 
 Finally, Nornsible supports multiple inventory files as well as dynamic inventory files -- just like Ansible.
+
+Of course you can simply do all of this yourself, but why not let nornsible handle it for you!
 
 
 # How does Nornsible work?
@@ -148,7 +150,9 @@ I broke testing into two main categories -- unit and integration. Unit is what y
 
 # To Do
 
-- Add handling for "not" in host/group limit; i.e.: "-t !localhost" to run against all hosts *not* localhost.
+- Add handling for "not" in group limit; i.e.: "-t !somegroup" to run against all groups *not* somegroup.
+- Add wildcard "*" for host/group limit
+- Allow for filtering on hosts and groups -- I think basically should be easy... just need to filter groups first then do hosts... removing any skip hosts as needed, but just re-calling filter on the inventory object should sort this... would just need decent testing!
 - Add more examples for using nornsible inventory in different ways -- i.e. multiple inventory, dynamic inventory, hash_behavior settings, etc.
 - Add more detailed readme info on inventory stuff.
 - Add support for host/group vars in directories in the host/group vars parent directory...
@@ -157,3 +161,4 @@ I broke testing into two main categories -- unit and integration. Unit is what y
 - Fix/add logging -- ensure inventory logs to nornir log as per usual, but also create a nornsible log for all nornsible "stuff".
 - Investigate adding a `-C` flag for check mode -- would likely only be able to support netmiko/napalm tasks... not sure best way to do this but would be a nice feature!
 - Investigate adding a retry wrapper. Would need to clear failed hosts before retrying tasks. Easily done in normal nornir stuff directly, but could be nice to have here.
+- Parametrize the tests... they've gotten outa control for no real reason!

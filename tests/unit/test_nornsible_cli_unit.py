@@ -206,6 +206,23 @@ def test_set_nornsible_limit_host():
         assert set(nr.inventory.hosts.keys()) == {"delegate", "sea-eos-1"}
 
 
+def test_set_nornsible_limit_exclude_host():
+    testargs = ["somescript", "-l", "!sea-eos-1,!upper-host"]
+    with patch.object(sys, "argv", testargs):
+        nr = InitNornir(
+            inventory={
+                "plugin": "nornir.plugins.inventory.simple.SimpleInventory",
+                "options": {
+                    "host_file": f"{TEST_DIR}_test_nornir_inventory/basic/hosts.yaml",
+                    "group_file": f"{TEST_DIR}_test_nornir_inventory/basic/groups.yaml",
+                },
+            },
+            logging={"enabled": False},
+        )
+        nr = InitNornsible(nr)
+        assert set(nr.inventory.hosts.keys()) == {"localhost", "delegate", "sea-nxos-1"}
+
+
 def test_set_nornsible_limit_host_disable_delegate():
     testargs = ["somescript", "-l", "sea-eos-1", "-d"]
     with patch.object(sys, "argv", testargs):
